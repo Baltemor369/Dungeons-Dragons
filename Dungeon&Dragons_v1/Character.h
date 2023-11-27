@@ -27,7 +27,6 @@ private:
     Armor p_armor;
     int p_hp, p_velocity; /** Basic stats: health, damage, speed move */
     int p_x, p_y; /** 2D position */
-    bool p_move_up, p_move_down, p_move_right, p_move_left; /** Boolean variables to manage movement */
 public:
     /**
      * @brief Constructor for the Character class.
@@ -82,30 +81,6 @@ public:
     int get_y() { return p_y; }
 
     /**
-     * @brief Set the upward movement of the character.
-     * @param val Boolean value indicating if the character is moving up.
-     */
-    void set_move_up(bool val);
-
-    /**
-     * @brief Set the downward movement of the character.
-     * @param val Boolean value indicating if the character is moving down.
-     */
-    void set_move_down(bool val);
-
-    /**
-     * @brief Set the rightward movement of the character.
-     * @param val Boolean value indicating if the character is moving right.
-     */
-    void set_move_right(bool val);
-
-    /**
-     * @brief Set the leftward movement of the character.
-     * @param val Boolean value indicating if the character is moving left.
-     */
-    void set_move_left(bool val);
-
-    /**
      * @brief Inflict damage on the character.
      * @param damage The damage to inflict.
      */
@@ -128,7 +103,7 @@ public:
      * If the character is moving right, its x-coordinate is incremented.
      * If the character is moving left, its x-coordinate is decremented.
      */
-    void move();
+    void move(std::string dir);
 };
 
 #endif

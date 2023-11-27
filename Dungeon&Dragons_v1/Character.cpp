@@ -5,23 +5,6 @@ Character::~Character()
 {
 }
 
-void Character::set_move_up(bool val)
-{
-    p_move_up = val;
-}
-void Character::set_move_down(bool val)
-{
-    p_move_down = val;
-}
-void Character::set_move_right(bool val)
-{
-    p_move_right = val;
-}
-void Character::set_move_left(bool val)
-{
-    p_move_left = val;
-}
-
 void Character::info()
 {
     std::string text;
@@ -47,25 +30,28 @@ void Character::deal_damage(Weapon* weapon)
 }
 
 void Character::attack(Character* c2)
-{    
-    c2->deal_damage(&p_weapon);
+{   
+    if (p_x == c2->p_x && p_y == c2->p_y);
+    {
+        c2->deal_damage(&p_weapon);
+    }
 }
 
-void Character::move()
+void Character::move(std::string dir)
 {
-    if (p_move_up)
+    if (dir == "up")
     {
         p_y -= p_velocity;
     }
-    else if (p_move_down)
+    else if (dir == "down")
     {
         p_y += p_velocity;
     }
-    else if (p_move_right)
+    else if (dir == "right")
     {
         p_x += p_velocity;
     }
-    else if (p_move_left)
+    else if (dir == "left")
     {
         p_x -= p_velocity;
     }
