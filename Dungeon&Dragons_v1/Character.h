@@ -7,13 +7,15 @@
  * Author: Baltemor369
  * Date: November 15, 2023
  */
-
 #ifndef Character_H
 #define Character_H
 
-#include <string>
 #include "Weapon.h"
 #include"Armor.h"
+#include "Utils.h"
+#include <iostream>
+#include <string>
+#include <cmath>
 
 /**
  * @class Character
@@ -104,6 +106,10 @@ public:
      * If the character is moving left, its x-coordinate is decremented.
      */
     void move(std::string dir);
+
+    bool reachable(Character* other);
 };
+
+double distance(Character* obj1, Character* obj2);
 
 #endif

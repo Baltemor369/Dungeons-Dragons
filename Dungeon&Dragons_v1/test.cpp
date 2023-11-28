@@ -9,7 +9,7 @@
 using namespace std;
 
 /*
-g++ Character.cpp Weapon.cpp Armor.cpp test.cpp -o test
+g++ Character.cpp Weapon.cpp Armor.cpp Utils.cpp test.cpp -o test
 */
 
 int main(int argc, char const *argv[])
@@ -21,9 +21,8 @@ int main(int argc, char const *argv[])
     std::uniform_int_distribution<int> distribution(0, directions.size()-1);
 
     Character villain("Joker", 120, Weapon("Massue",4,1), Armor(),5,5,1);
-    Character hero("Batman", 60, Weapon("Dag",9,4), Armor("Ebenite",15),5,0,1);
+    Character hero("Batman", 60, Weapon("Dag",9,4), Armor("Ebenite",15),5,3,1);
 
-    
     while (hero.get_hp() != 0 && villain.get_hp() != 0)
     {
         villain.info();
@@ -32,31 +31,53 @@ int main(int argc, char const *argv[])
         villain.attack(&hero);
         hero.attack(&villain);
 
-        int randomNumber = distribution(generator);
-        if (directions[randomNumber] == "up" && hero.get_y() < 5) {
-            hero.move("down");
-        } else if (directions[randomNumber] == "down" && hero.get_y() > 0) {
-            hero.move("up");
-        } else if (directions[randomNumber] == "left" && hero.get_x() > 0) {
-            hero.move("left");
-        } else if (directions[randomNumber] == "right" && hero.get_x() < 5) {
-            hero.move("right");
+        if (!hero.reachable(&villain))
+        {
+            bool move_done(false);
+            while(!move_done){
+                int randomNumber = distribution(generator);
+                if (directions[randomNumber] == "up" && hero.get_y() < 5) {
+                    move_done = true;
+                    hero.move("down");
+                } else if (directions[randomNumber] == "down" && hero.get_y() > 0) {
+                    move_done = true;
+                    hero.move("up");
+                } else if (directions[randomNumber] == "left" && hero.get_x() > 0) {
+                    move_done = true;
+                    hero.move("left");
+                } else if (directions[randomNumber] == "right" && hero.get_x() < 5) {
+                    move_done = true;
+                    hero.move("right");
+                }
+            }
         }
+        if(!villain.reachable(&hero))
+        {
+            bool move_done(false);
+            while(!move_done)
+            {
+                int randomIndex = distribution(generator);
+                if (directions[randomIndex] == "up" && villain.get_y() < 5) {
+                    move_done = true;
+                    villain.move("down");
+                } else if (directions[randomIndex] == "down" && villain.get_y() > 0) {
+                    move_done = true;
+                    villain.move("up");
+                } else if (directions[randomIndex] == "left" && villain.get_x() > 0) {
+                    move_done = true;
+                    villain.move("left");
+                } else if (directions[randomIndex] == "right" && villain.get_x() < 5) {
+                    move_done = true;
+                    villain.move("right");
+                }
+            }
+            
 
-        int randomIndex = distribution(generator);
-        if (directions[randomIndex] == "up" && villain.get_y() < 5) {
-            villain.move("down");
-        } else if (directions[randomIndex] == "down" && villain.get_y() > 0) {
-            villain.move("up");
-        } else if (directions[randomIndex] == "left" && villain.get_x() > 0) {
-            villain.move("left");
-        } else if (directions[randomIndex] == "right" && villain.get_x() < 5) {
-            villain.move("right");
+            
         }
-
+        
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-    
     villain.info();
     hero.info();
 

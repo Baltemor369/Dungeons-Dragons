@@ -1,5 +1,4 @@
 #include "Character.h"
-#include <iostream>
 
 Character::~Character()
 {
@@ -7,12 +6,10 @@ Character::~Character()
 
 void Character::info()
 {
-    std::string text;
-    text = p_name + "(" + std::to_string(p_x) + "," + std::to_string(p_y) + ")" + " : Hp=" + std::to_string(p_hp) + ", velocity=" +std::to_string(p_velocity)+"\n";
-    printf("%s", text.c_str());
+    std::cout << p_name << "(" << std::to_string(p_x) << "," << std::to_string(p_y) << ")" << " : Hp=" << std::to_string(p_hp) << ", velocity=" <<std::to_string(p_velocity)<<std::endl;
     p_weapon.info();
     p_armor.info();
-    printf("\n");
+    std::cout << std::endl;
 }
 
 void Character::deal_damage(Weapon* weapon)
@@ -54,6 +51,16 @@ void Character::move(std::string dir)
     else if (dir == "left")
     {
         p_x -= p_velocity;
-    }
-    
+    }   
+}
+
+bool Character::reachable(Character* other)
+{
+    return distance(this, other) <= p_weapon.get_reach();
+}
+
+//----------------------------------------------------------//
+
+double distance(Character* obj1, Character* obj2) {
+    return std::sqrt(std::pow(obj2->get_x() - obj1->get_x(), 2) + std::pow(obj2->get_y() - obj1->get_y(), 2));
 }
