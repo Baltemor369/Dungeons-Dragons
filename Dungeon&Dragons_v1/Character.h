@@ -108,6 +108,12 @@ public:
     void move(std::string dir);
 
     bool reachable(Character* other);
+
+    void approach(Character* target);
+
+    void move_away(Character* target);
+
+    bool is_alive(){return p_hp > 0;}
 };
 
 double distance(Character* obj1, Character* obj2);
