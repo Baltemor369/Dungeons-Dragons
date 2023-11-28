@@ -31,7 +31,7 @@ void Character::deal_damage(Weapon* weapon)
 
 void Character::attack(Character* c2)
 {   
-    if (p_x == c2->p_x && p_y == c2->p_y);
+    if (p_x == c2->p_x && p_y == c2->p_y)
     {
         c2->deal_damage(&p_weapon);
     }
