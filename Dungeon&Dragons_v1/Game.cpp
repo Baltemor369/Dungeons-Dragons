@@ -1,8 +1,9 @@
 #include "Game.h"
 
-Game::Game(/* args */)
-{
-}
+#define MAX_WIDTH 10
+#define MIN_WIDTH -10
+#define MAX_HEIGHT 10
+#define MIN_HEIGHT -10
 
 Game::~Game()
 {
@@ -10,26 +11,29 @@ Game::~Game()
 
 void Game::init()
 {
-    Character villain("Joker", 120, Weapon("Massue",4,1), Armor(),5,3,1);
-    Character hero("Batman", 60, Weapon("Dag",9,4), Armor("Ebenite",15),0,3,1);
+    // create the player caractere;
+    std::string pseudo;
+    std::cout << "enter your name :";
+    std::cin >> pseudo;
+    // default weapon
+    // default armor
+    // empty ressources
+    // default hp and velocity
+    // position (0,0)
 
-}
+    Character player(pseudo,0,0);
+    add_character("player", player);
+};
 
 bool Game::loop()
 {
-    std::random_device rd;
-    std::mt19937 generator(rd());
-
-    std::vector<std::string> directions = {"up","down","left","right"};
-    std::uniform_int_distribution<int> distribution(0, directions.size()-1);
-
-    
-
+    p_start_time = std::chrono::steady_clock::now();
+    int test;
     while(p_running)
     {
-        //handle_event(&p_evt);
         update_data();
-        //refresh_graphic();
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     
     return true;
@@ -42,40 +46,24 @@ void Game::handle_evt(int* evt)
 
 void Game::update_data()
 {
-    if (!hero.reachable(&villain))
-        {
-            hero.approach(&villain);
-        }
-        if(!villain.reachable(&hero))
-        {
-            bool move_done(false);
-            while(!move_done)
-            {
-                int randomIndex = distribution(generator);
-                if (directions[randomIndex] == "up" && villain.get_y() < 5) {
-                    move_done = true;
-                    villain.move("down");
-                } else if (directions[randomIndex] == "down" && villain.get_y() > 0) {
-                    move_done = true;
-                    villain.move("up");
-                } else if (directions[randomIndex] == "left" && villain.get_x() > 0) {
-                    move_done = true;
-                    villain.move("left");
-                } else if (directions[randomIndex] == "right" && villain.get_x() < 5) {
-                    move_done = true;
-                    villain.move("right");
-                }
-            }
-        }
-    if (p_characters["hero"].get_hp() != 0 && p_characters["villain"].get_hp() != 0)
+    // get characters
+    Character* player = &p_characters["player"];
+
+    auto current_time = std::chrono::steady_clock::now();
+    auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - p_start_time).count();
+    
+    std::cout << elapsed_time << std::endl;
+    
+    if (elapsed_time >= 10)
+    {
+        //generer un monstre sur la carte
+    }
+    
+
+    if (player->get_hp() == 0)
     {
         p_running = false;
     }   
-}
-
-void Game::refresh_grapĥic()
-{
-    
 }
 
 bool Game::add_character(std::string name, Character object)
@@ -86,6 +74,4 @@ bool Game::add_character(std::string name, Character object)
         return true;
     }
     return false;
-    
-    
 }

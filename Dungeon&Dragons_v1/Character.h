@@ -1,119 +1,53 @@
-/**
- * @file Character.h
- * @brief Definition of the Character class
- * 
- * Handles actions and attributes for a player or NPC, such as HP, Damage, speed, etc.
- * 
- * Author: Baltemor369
- * Date: November 15, 2023
- */
-#ifndef Character_H
-#define Character_H
+#ifndef CHARACTER_H
+#define CHARACTER_H
 
 #include "Weapon.h"
 #include"Armor.h"
+#include "Ressources.h"
+#include "Random.h"
 #include "Utils.h"
+
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <chrono>
+#include <thread>
 
-/**
- * @class Character
- * @brief Represents a character with attributes like HP, damage, speed, etc.
- */
 class Character
 {
 private:
-    std::string p_name; /** A unique name (ID) */
-    Weapon p_weapon;
-    Armor p_armor;
-    int p_hp, p_velocity; /** Basic stats: health, damage, speed move */
-    int p_x, p_y; /** 2D position */
+    Random generator;
+    std::string p_name;
+    Weapon p_weapon_equipped;
+    Armor p_armor_equipped;
+    Ressources p_ressources;
+    int p_hp, p_velocity;
+    int p_x, p_y;
 public:
-    /**
-     * @brief Constructor for the Character class.
-     * @param name The name of the character.
-     * @param hp The character's hit points (HP) (default is 100).
-     * @param weapon The character's weapon.
-     * @param armor The character's armor.
-     * @param x The x-coordinate of the character's position (default is 0).
-     * @param y The y-coordinate of the character's position (default is 0).
-     * @param velocity The character's velocity (default is 1).
-     */
-    Character(std::string name, int hp=100, Weapon weapon=Weapon(), Armor armor=Armor(), int x=0, int y=0, int velocity=1):p_name(name), p_hp(hp), p_weapon(weapon), p_armor(armor), p_x(x), p_y(y), p_velocity(velocity){}
-
-    /**
-     * @brief Destructor for the Character class.
-     */
+    Character(std::string name, int x=0, int y=0, int hp=100, Weapon weapon=Weapon(), Armor armor=Armor(), Ressources ressource=Ressources(), int velocity=1);
+    Character():p_name("None"), p_hp(-1), p_weapon_equipped(Weapon()), p_armor_equipped(Armor()), p_x(0), p_y(0), p_velocity(-1), generator(0,4){}
     ~Character();
 
-    /**
-     * @brief Display information about the character.
-     */
     void info();
 
-    /**
-     * @brief Get the name of the character.
-     * @return The name of the character.
-     */
     std::string get_name() { return p_name;}
-
-    /**
-     * @brief Get the damage of the character.
-     * @return The damage of the character.
-     */
-    Weapon get_weapon() { return p_weapon;}
-
-    /**
-     * @brief Get the hit points (HP) of the character.
-     * @return The hit points (HP) of the character.
-     */
+    Weapon get_weapon() { return p_weapon_equipped;}
+    Armor get_armor() { return p_armor_equipped;}
+    Ressources get_ressources() { return p_ressources;}
     int get_hp() { return p_hp; }
-
-    /**
-     * @brief Get the x-coordinate of the character's position.
-     * @return The x-coordinate of the character's position.
-     */
+    int get_velocity() { return p_velocity; }
     int get_x() { return p_x; }
-
-    /**
-     * @brief Get the y-coordinate of the character's position.
-     * @return The y-coordinate of the character's position.
-     */
     int get_y() { return p_y; }
 
-    /**
-     * @brief Inflict damage on the character.
-     * @param damage The damage to inflict.
-     */
     void deal_damage(Weapon* weapon);
-
-    /**
-     * @brief Attack another character, dealing damage to them.
-     * @param c2 The character to attack.
-     */
-    void attack(Character* c2);
-
-    /**
-     * @brief Move the character based on its current movement status.
-     * 
-     * Moves the character's position based on the current movement status
-     * (up, down, left, right) and the character's velocity.
-     * 
-     * If the character is moving up, its y-coordinate is decremented.
-     * If the character is moving down, its y-coordinate is incremented.
-     * If the character is moving right, its x-coordinate is incremented.
-     * If the character is moving left, its x-coordinate is decremented.
-     */
+    void attack(Character* target);
     void move(std::string dir);
-
+    void random_move();
     bool reachable(Character* other);
-
     void approach(Character* target);
-
     void move_away(Character* target);
-
     bool is_alive(){return p_hp > 0;}
+    void looting(Character* other);
 };
 
 double distance(Character* obj1, Character* obj2);
