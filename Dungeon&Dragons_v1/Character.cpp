@@ -87,8 +87,7 @@ void Character::move(std::string dir)
 
 void Character::random_move()
 {
-    std::cout << "random nb "<< generator.getRandomNumber() << std::endl;
-    std::cout << "direction  "<< 1 << std::endl;
+    this->move(Const::DIRECTIONS[generator.getRandomNumber()]);
 }
 
 bool Character::reachable(Character* other)
