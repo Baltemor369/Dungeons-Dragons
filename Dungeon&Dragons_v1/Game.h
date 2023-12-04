@@ -4,21 +4,20 @@
 #include <random>
 #include <map>
 #include <string>
-#include <chrono>
-#include <thread>
 #include "Character.h"
-#include "Utils.h"
+#include "Clock.h"
+#include "Random.h"
 
 class Game
 {
 private:
     bool p_running;
     std::map<std::string, Character> p_characters;
+    Clock p_ennemy_spawn_timer;
+    Random p_generator;
     
-    
-    std::chrono::steady_clock::time_point p_start_time;
 public:
-    Game(/* args */):{};
+    Game(/* args */);
     ~Game();
 
     void init();
@@ -26,6 +25,7 @@ public:
     void handle_evt(int* evt);
     void update_data();
     bool add_character(std::string name, Character object);
+    Character generate_monster();
 };
 
 

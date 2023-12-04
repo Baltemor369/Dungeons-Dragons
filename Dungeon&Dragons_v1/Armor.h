@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include "Random.h"
 
 class Armor
 {
@@ -11,6 +12,7 @@ private:
     int p_physical_resistance;
 public:
     Armor(std::string name="Clothes", int resistance=1):p_name(name), p_physical_resistance(resistance){};
+    Armor(const Armor &other);
     ~Armor(){};
     void info();
 

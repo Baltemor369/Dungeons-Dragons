@@ -5,6 +5,11 @@
 #define MAX_HEIGHT 10
 #define MIN_HEIGHT -10
 
+Game::Game()
+{
+
+}
+
 Game::~Game()
 {
 }
@@ -27,8 +32,8 @@ void Game::init()
 
 bool Game::loop()
 {
-    p_start_time = std::chrono::steady_clock::now();
-    int test;
+    p_ennemy_spawn_timer.start_clock();
+    p_running = true;
     while(p_running)
     {
         update_data();
@@ -49,14 +54,10 @@ void Game::update_data()
     // get characters
     Character* player = &p_characters["player"];
 
-    auto current_time = std::chrono::steady_clock::now();
-    auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - p_start_time).count();
-    
-    std::cout << elapsed_time << std::endl;
-    
-    if (elapsed_time >= 10)
+    if (p_ennemy_spawn_timer.elapsed_time() >= 10*1000)
     {
-        //generer un monstre sur la carte
+        std::cout << "spawn ennemy" << std::endl;
+        p_ennemy_spawn_timer.restart_clock();
     }
     
 
@@ -74,4 +75,9 @@ bool Game::add_character(std::string name, Character object)
         return true;
     }
     return false;
+}
+
+Character Game::generate_monster()
+{
+    
 }

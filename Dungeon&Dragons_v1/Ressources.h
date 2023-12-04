@@ -3,6 +3,7 @@
 
 #include "Weapon.h"
 #include "Armor.h"
+#include "Random.h"
 
 #include <iostream>
 #include <vector>

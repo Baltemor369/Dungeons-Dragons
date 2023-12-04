@@ -5,7 +5,7 @@
 #include"Armor.h"
 #include "Ressources.h"
 #include "Random.h"
-#include "Utils.h"
+#include "Const.h"
 
 #include <iostream>
 #include <string>
@@ -16,7 +16,6 @@
 class Character
 {
 private:
-    Random generator;
     std::string p_name;
     Weapon p_weapon_equipped;
     Armor p_armor_equipped;
@@ -25,7 +24,9 @@ private:
     int p_x, p_y;
 public:
     Character(std::string name, int x=0, int y=0, int hp=100, Weapon weapon=Weapon(), Armor armor=Armor(), Ressources ressource=Ressources(), int velocity=1);
-    Character():p_name("None"), p_hp(-1), p_weapon_equipped(Weapon()), p_armor_equipped(Armor()), p_x(0), p_y(0), p_velocity(-1), generator(0,4){}
+    Character():p_name("None"), p_hp(-1), p_weapon_equipped(Weapon()), p_armor_equipped(Armor()), p_x(0), p_y(0), p_velocity(-1){}
+    Character(const Character &other);
+    Character& operator=(const Character &other);
     ~Character();
 
     void info();

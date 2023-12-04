@@ -11,7 +11,7 @@ private:
     std::mt19937 p_generator;
     std::uniform_int_distribution<int> p_distribution;
 public:
-    Random(int min, int max);
+    Random(int min=0, int max=1);
     ~Random();
     
     int getRandomNumber();

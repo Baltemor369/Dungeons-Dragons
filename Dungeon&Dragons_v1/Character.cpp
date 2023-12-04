@@ -1,6 +1,6 @@
 #include "Character.h"
 
-Character::Character(std::string name, int x, int y, int hp, Weapon weapon, Armor armor, Ressources ressources, int velocity):generator(0,4)
+Character::Character(std::string name, int x, int y, int hp, Weapon weapon, Armor armor, Ressources ressources, int velocity)
 {
     p_name = name;
     p_hp = hp; 
@@ -9,6 +9,31 @@ Character::Character(std::string name, int x, int y, int hp, Weapon weapon, Armo
     p_x = x; 
     p_y = y; 
     p_velocity = velocity;
+}
+
+Character::Character(const Character &other)
+{
+    p_name = other.p_name;
+    p_weapon_equipped = other.p_weapon_equipped;
+    p_armor_equipped = other.p_armor_equipped;
+    p_ressources = other.p_ressources;
+    p_hp = other.p_hp;
+    p_velocity = other.p_velocity;
+    p_x = other.p_x;
+    p_y = other.p_y;
+}
+
+Character& Character::operator=(const Character &other)
+{
+    p_name = other.p_name;
+    p_weapon_equipped = other.p_weapon_equipped;
+    p_armor_equipped = other.p_armor_equipped;
+    p_ressources = other.p_ressources;
+    p_hp = other.p_hp;
+    p_velocity = other.p_velocity;
+    p_x = other.p_x;
+    p_y = other.p_y;
+    return *this;
 }
 
 Character::~Character()
@@ -87,6 +112,7 @@ void Character::move(std::string dir)
 
 void Character::random_move()
 {
+    Random generator(0,4);
     this->move(Const::DIRECTIONS[generator.getRandomNumber()]);
 }
 
