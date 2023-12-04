@@ -3,12 +3,13 @@
 #include <vector>
 
 #include "Character.h"
+#include "Clock.h"
 #include <cmath>
 
 using namespace std;
 
 /*
-g++ Character.cpp Weapon.cpp Armor.cpp Ressources.cpp test.cpp -o test
+g++ Character.cpp Weapon.cpp Armor.cpp Ressources.cpp Random.cpp test.cpp -o test
 */
 
 int main(int argc, char const *argv[])
@@ -26,10 +27,17 @@ int main(int argc, char const *argv[])
         if (buff > last_dist)
         {
             test_approach = false;
+            cout << "test_approach : Failed" << endl;
         }else{
             last_dist = buff;
         }
     }
+    if (test_approach)
+    {
+        cout << "test_approach : Succeeded" << endl;
+    }
+    
+
     // test move_away
     bool test_moveaway(true);
     last_dist = 0;
@@ -40,10 +48,17 @@ int main(int argc, char const *argv[])
         if (buff < last_dist)
         {
             test_moveaway = false;
+            cout << "test_moveaway : Failed"<< endl;
         }else{
             last_dist = buff;
         }
     }
+    if (test_moveaway)
+    {
+        cout << "test_moveaway : Succeed"<< endl;
+    }
+    
+    
 
     // random test
     bool test_random(true);
@@ -51,15 +66,18 @@ int main(int argc, char const *argv[])
     
     for (int i = 0; i < 10; i++)
     {
-        std::cout << rd.getRandomNumber() << std::endl;
         if (!(0 <= rd.getRandomNumber() <= 5))
         {
             test_random = false;
+            cout << "test_random : Failed" << endl;
         }
+    }
+    if (test_random)
+    {
+        cout << "test_random : Succeeded" << endl;
     }
     
     // random move test
-    bool test_random_move(false);
     int x = bob.get_x();
     int y = bob.get_y();
     bob.random_move();
@@ -68,14 +86,36 @@ int main(int argc, char const *argv[])
 
     if (x != x2 or y != y2)
     {
-        test_random_move = true;
+        cout << "test_random_move : Succeeded " << endl;
+    }else{
+        cout << "test_random_move : Failed " << endl;
     }
-    
-    
-    cout << "test_approach : "<< test_approach << endl;
-    cout << "test_moveaway : "<< test_moveaway << endl;
-    cout << "test_random : "<< test_random << endl;
-    cout << "test_random_move : "<< test_random_move << endl;
+
+    // clock test
+    Clock myClock;
+    myClock.start_clock();
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    if (myClock.elapsed_time() > 2)
+    {
+        cout << "test_start : Succeeded" <<  endl;
+    }else{
+        cout << "test_start : Failed" <<  endl;
+    }
+    myClock.restart_clock();
+    if (myClock.elapsed_time() < 1)
+    {
+        cout << "test_restart : Succeeded" <<  endl;
+    }else{
+        cout << "test_restart : Failed" <<  endl;
+    }
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    if (myClock.elapsed_time() > 1)
+    {
+        cout << "test_elapsed_time : Succeeded" <<  endl;
+    }else{
+        cout << "test_elapsed_time : Failed" <<  endl;
+    }
 
     return 0;
 }
