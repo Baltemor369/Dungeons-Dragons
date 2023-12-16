@@ -1,13 +1,19 @@
 #include "Character.h"
 
-Character::Character(std::string name, int x, int y, int hp, Weapon weapon, Armor armor, Ressources ressources, int velocity)
+Character::Character(std::string name, int x=0, int y=0, int hp=100,
+                        std::string weapon_name="Hand", int damage=1,
+                        int lethality=0, int reach=1, std::string armor_name="Clothes",
+                        int resistance=1, int gold, std::vector<int> ores,
+                        std::vector<int> ingots, std::vector<int> shards,
+                        std::vector<Weapon> p_weapons, std::vector<Armor> p_armors,
+                        int velocity=1):p_name(name), p_pos(x,y), p_hp(hp), 
+                        p_weapon_equipped(weapon_name, damage, lethality, reach),
+                        p_armor_equipped(armor_name, resistance), p_ressources(gold)
 {
     p_name = name;
     p_hp = hp; 
     p_weapon_equipped = weapon; 
     p_armor_equipped = armor; 
-    p_x = x; 
-    p_y = y; 
     p_velocity = velocity;
 }
 

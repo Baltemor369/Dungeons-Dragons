@@ -24,8 +24,6 @@ namespace Const {
         int reach;
     };
     std::map<std::string, WeaponsParams> weaponsParamsDict;
-
-    WeaponsParams ;
     
     struct MonsterParams {
         std::string name;
@@ -37,19 +35,19 @@ namespace Const {
     };
     std::map<std::string, MonsterParams> monsterParamsDict;
 
-    MonsterParams goblinParams = {"Goblin", 10, 3, sword};
-    MonsterParams orcParams = {};
-    MonsterParams dragonParams = {};
-    MonsterParams shadowspireParams = {};
-    MonsterParams blihtbeastParams = {};
-    MonsterParams thundermawParams = {};
-    MonsterParams frostbaneParams = {};
-    MonsterParams venomshadeParams = {};
-    MonsterParams emberfiendParams = {};
-    MonsterParams dreadhowlParams = {};
-    MonsterParams runebladeParams = {};
-    MonsterParams lunarshroudParams = {};
-    MonsterParams neanterosParams = {};
+    const MonsterParams goblinParams = {"Goblin", 10, 3, sword};
+    const MonsterParams orcParams = {};
+    const MonsterParams dragonParams = {};
+    const MonsterParams shadowspireParams = {};
+    const MonsterParams blihtbeastParams = {};
+    const MonsterParams thundermawParams = {};
+    const MonsterParams frostbaneParams = {};
+    const MonsterParams venomshadeParams = {};
+    const MonsterParams emberfiendParams = {};
+    const MonsterParams dreadhowlParams = {};
+    const MonsterParams runebladeParams = {};
+    const MonsterParams lunarshroudParams = {};
+    const MonsterParams neanterosParams = {};
     
 }
 

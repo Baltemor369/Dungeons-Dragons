@@ -3,28 +3,43 @@
 
 #include "Weapon.h"
 #include"Armor.h"
-#include "Ressources.h"
+#include "Inventory.h"
 #include "Random.h"
+#include "Coord.h"
 #include "Const.h"
 
 #include <iostream>
 #include <string>
-#include <cmath>
-#include <chrono>
-#include <thread>
+#include <vector>
 
 class Character
 {
 private:
-    std::string p_name;
-    Weapon p_weapon_equipped;
-    Armor p_armor_equipped;
-    Ressources p_ressources;
-    int p_hp, p_velocity;
-    int p_x, p_y;
+    std::string p_name; // pseudo
+    Weapon p_weapon_equipped; // current equiped weapon
+    Armor p_armor_equipped; // current equiped armor
+    Inventory p_inventory; // inventory handler
+    Coord p_pos; // character position
+    int p_hp, p_velocity; // others stats
 public:
-    Character(std::string name, int x=0, int y=0, int hp=100, Weapon weapon=Weapon(), Armor armor=Armor(), Ressources ressource=Ressources(), int velocity=1);
-    Character():p_name("None"), p_hp(-1), p_weapon_equipped(Weapon()), p_armor_equipped(Armor()), p_x(0), p_y(0), p_velocity(-1){}
+    Character(std::string name,
+                int x=0,
+                int y=0,
+                int hp=100,
+                std::string weapon_name="Hand",
+                int damage=1,
+                int lethality=0,
+                int reach=1,
+                std::string armor_name="Clothes",
+                int resistance=1,
+                int p_gold,
+                std::vector<int> ores,
+                std::vector<int> ingots,
+                std::vector<int> shards,
+                std::vector<Weapon> p_weapons,
+                std::vector<Armor> p_armors,
+                int velocity=1);
+
     Character(const Character &other);
     Character& operator=(const Character &other);
     ~Character();
