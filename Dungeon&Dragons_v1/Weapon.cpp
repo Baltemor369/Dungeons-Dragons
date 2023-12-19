@@ -11,5 +11,5 @@ void Weapon::setDamage(int damage) {
 }
 
 std::string Weapon::info() const {
-    return "Weapon: " + getName() + ", Type: " + getType() + ", Damage: " + std::to_string(damage_);
+    return "Weapon: " + getName() + ", Type: " + getType() + ", Damage: " + std::to_string(damage_) + "\n";
 }

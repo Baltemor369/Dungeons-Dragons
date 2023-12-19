@@ -3,6 +3,7 @@
 #include "Coord.h"
 #include "Object.h"
 #include "Inventory.h"
+#include "Weapon.h"
 
 #include <string>
 #include <cmath>
@@ -11,11 +12,12 @@ class Character
 {
 private:
     std::string name_;
-    Coord location_;
     int hp_, velocity_;
+    Coord location_;
     Inventory inventory_;
+    Weapon* equipedWeapon_; 
 public:
-    Character(std::string name, int x=0, int y=0, int hp=100, int velocity=1);
+    Character(std::string name, int x=0, int y=0, int hp=100, int velocity=1, std::string weaponName="Hands", int weaponDamage=1);
     ~Character();
 
     std::string info()const;
@@ -34,13 +36,19 @@ public:
     void setHP(int hp);
     void setVelocity(int velocity);
 
-    // movement methods
-    std::string move(int deltaX, int deltaY);
+    // movement
+    std::string move(std::string direction);
     std::string approachCharacter(const Character& target);
     std::string fleeCharacter(const Character& target);
 
-    // inventory methods
+    // inventory
     void addToInventory(Object* item);
     void removeFromInventory(Object* item);
-    std::string infoInventory() const;
+    std::string infoInventory() const{return inventory_.info();}
+
+    // weapon 
+    Weapon* getWeapon(){ return equipedWeapon_ ; }
+    void setWeapon(Weapon* w){ equipedWeapon_ = w ; }
+    std::string infoWeapon()const{return equipedWeapon_->info();}
+    // armor
 };

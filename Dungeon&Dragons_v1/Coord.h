@@ -1,17 +1,20 @@
 #pragma once
 
+#include <string>
+
 class Coord
 {
 private:
-    int p_x, p_y;
+    int x_, y_;
 public:
     Coord(int x, int y);
     ~Coord();
-    Coord operator+(const Coord& other) const;
+    Coord operator+(const Coord& other) const{return Coord(x_ + other.getX(), y_ + other.getY());};
+    std::string get(){return "(" +std::to_string(x_)+","+std::to_string(y_)+")";}
 
-    int getX()const{return p_x;}
-    int getY()const{return p_y;}
+    int getX()const{return x_;}
+    int getY()const{return y_;}
     
-    void setX(int newX){p_x = newX;}
-    void setY(int newY){p_y = newY;}
+    void setX(int newX){x_ = newX;}
+    void setY(int newY){y_ = newY;}
 };
