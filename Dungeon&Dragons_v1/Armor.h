@@ -1,24 +1,17 @@
-#ifndef ARMOR_H
-#define ARMOR_H
+#pragma once
 
-#include <iostream>
-#include <string>
-#include "Random.h"
+#include "Object.h"
 
-class Armor
-{
+class Armor : public Object {
 private:
-    std::string p_name;
-    int p_physical_resistance;
+    int protection_;
+
 public:
-    Armor(std::string name="Clothes", int resistance=1):p_name(name), p_physical_resistance(resistance){};
-    Armor(const Armor &other);
-    ~Armor(){};
-    void info();
+    Armor(std::string name = "Clothes", int protection = 1);
 
-    std::string get_name(){return p_name;}
-    int get_resist_phys(){return p_physical_resistance;}
+    int getProtection() const;
+
+    void setProtection(int protection);
+
+    std::string info() const override;
 };
-
-
-#endif

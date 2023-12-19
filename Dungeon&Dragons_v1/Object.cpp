@@ -1,31 +1,24 @@
-#include "Object.h"
+#include "../headers/Object.h"
 
-void Object::set_count(int newValue)
-{
-    p_count = newValue;
+Object::Object(std::string name, std::string type) : name_(name), type_(type) {}
+
+std::string Object::info() const {
+    return "Object: " + name_ + ", Type: " + type_;
 }
 
-void Object::set_value(int newValue)
-{
-    p_value = newValue;
+std::string Object::getName() const {
+    return name_;
 }
 
-void Object::set_damage(int newValue)
-{
-    p_damage = newValue;
+std::string Object::getType() const {
+    return type_;
 }
 
-void Object::set_lethality(int newValue)
-{
-    p_lethality = newValue;
+void Object::setName(const std::string name) {
+    name_ = name;
 }
 
-void Object::set_reach(int newValue)
-{
-    p_reach = newValue;
-}
 
-void Object::set_resistance(int newValue)
-{
-    p_resistance = newValue;
+void Object::setType(const std::string type) {
+    type_ = type;
 }

@@ -1,27 +1,17 @@
-#ifndef WEAPON_H
-#define WEAPON_H
+#pragma once
 
-#include <iostream>
-#include <string>
-#include "Random.h"
+#include "Object.h"
 
-class Weapon
-{
+class Weapon : public Object {
 private:
-    std::string p_name;
-    int p_damage, p_lethality, p_reach;
+    int damage_;
+
 public:
-    Weapon(std::string name="Hand", int damage=1, int lethality=0, int reach=1):p_name(name), p_damage(damage), p_lethality(lethality),p_reach(reach){};
-    Weapon(const Weapon &other);
-    ~Weapon(){};
-    std::string get_name(){return p_name;}
-    int get_damage(){return p_damage;}
-    int get_lethality(){return p_lethality;}
-    int get_reach(){return p_reach;}
+    Weapon(std::string name = "Hands", int damage = 1);
 
-    Weapon generator();
-    void info();
+    std::string info() const override;
+
+    int getDamage() const;
+
+    void setDamage(int damage);
 };
-
-
-#endif

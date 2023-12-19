@@ -1,187 +1,88 @@
-#include "Character.h"
+#include "../headers/Character.h"
 
-Character::Character(std::string name, int x=0, int y=0, int hp=100,
-                        std::string weapon_name="Hand", int damage=1,
-                        int lethality=0, int reach=1, std::string armor_name="Clothes",
-                        int resistance=1, int gold, std::vector<int> ores,
-                        std::vector<int> ingots, std::vector<int> shards,
-                        std::vector<Weapon> p_weapons, std::vector<Armor> p_armors,
-                        int velocity=1):p_name(name), p_pos(x,y), p_hp(hp), 
-                        p_weapon_equipped(weapon_name, damage, lethality, reach),
-                        p_armor_equipped(armor_name, resistance), p_ressources(gold)
-{
-    p_name = name;
-    p_hp = hp; 
-    p_weapon_equipped = weapon; 
-    p_armor_equipped = armor; 
-    p_velocity = velocity;
-}
-
-Character::Character(const Character &other)
-{
-    p_name = other.p_name;
-    p_weapon_equipped = other.p_weapon_equipped;
-    p_armor_equipped = other.p_armor_equipped;
-    p_ressources = other.p_ressources;
-    p_hp = other.p_hp;
-    p_velocity = other.p_velocity;
-    p_x = other.p_x;
-    p_y = other.p_y;
-}
-
-Character& Character::operator=(const Character &other)
-{
-    p_name = other.p_name;
-    p_weapon_equipped = other.p_weapon_equipped;
-    p_armor_equipped = other.p_armor_equipped;
-    p_ressources = other.p_ressources;
-    p_hp = other.p_hp;
-    p_velocity = other.p_velocity;
-    p_x = other.p_x;
-    p_y = other.p_y;
-    return *this;
-}
+Character::Character(std::string name, int x, int y, int hp, int velocity):name_(name), location_(x,y), hp_(hp), velocity_(velocity)
+{}
 
 Character::~Character()
+{}
+
+std::string Character::info()const
 {
+    std::string text;
+    text = name_ + "(" + std::to_string(location_.getX()) + "," + std::to_string(location_.getY()) + "): hp(" + std::to_string(hp_) + "), velocity(" + std::to_string(velocity_) + ")\n";
+    return text;
 }
 
-void Character::info()
-{
-    std::cout << p_name << "(" << std::to_string(p_x) << "," << std::to_string(p_y) << ")" << " : \nHp=" << std::to_string(p_hp) << ", \nvelocity=" <<std::to_string(p_velocity)<<std::endl;
-    p_ressources.info();
-    p_weapon_equipped.info();
-    p_armor_equipped.info();
-    std::cout << std::endl;
+void Character::setName(const std::string& name) {
+    name_ = name;
 }
 
-void Character::deal_damage(Weapon* weapon)
-{    
-    p_hp -= weapon->get_lethality();
-    int overdamage = (weapon->get_damage()-weapon->get_lethality()) - p_armor_equipped.get_resist_phys();
-    if (overdamage > 0)
-    {
-        p_hp -= overdamage;
-        if (p_hp < 0)
-        {
-            p_hp = 0;
-        }
+void Character::setLocation(const Coord& location) {
+    location_ = location;
+}
+
+void Character::setHP(int hp) {
+    hp_ = hp;
+}
+
+void Character::setVelocity(int velocity) {
+    velocity_ = velocity;
+}
+
+std::string Character::move(int deltaX, int deltaY) {
+    Coord currentLocation = getLocation();
+
+    Coord newLocation = currentLocation + Coord(deltaX, deltaY);
+
+    setLocation(newLocation);
+
+    return getName() + " move to (" + std::to_string(newLocation.getX()) + ", " + std::to_string(newLocation.getY()) + ")\n";
+}
+
+void Character::addToInventory(Object* item) {
+    inventory_.addItem(item);
+}
+
+void Character::removeFromInventory(Object* item) {
+    inventory_.removeItem(item);
+}
+
+std::string Character::infoInventory() const {
+    return inventory_.info();
+}
+
+std::string Character::approachCharacter(const Character& target) {
+    Coord currentLocation = getLocation();
+
+    Coord targetLocation = target.getLocation();
+
+    int deltaX = targetLocation.getX() - currentLocation.getX();
+    int deltaY = targetLocation.getY() - currentLocation.getY();
+
+    double distance = std::sqrt(deltaX * deltaX + deltaY * deltaY);
+
+    if (distance > getVelocity()) {
+        int moveX = static_cast<int>(std::round((deltaX / distance) * getVelocity()));
+        int moveY = static_cast<int>(std::round((deltaY / distance) * getVelocity()));
+
+        return move(moveX, moveY);
     }
+    return "";
 }
 
-void Character::attack(Character* target)
-{   
-    if (this->is_alive() && this->reachable(target))
-    {
-        std::cout << this->p_name << " attack " << target->get_name()<< " " << target->get_hp() <<"Hp -> ";
-        target->deal_damage(&p_weapon_equipped);
-        std::cout << target->get_hp()<<"Hp"<< std::endl;
+std::string Character::fleeCharacter(const Character& target) {
+    Coord currentLocation = getLocation();
 
-        if (!target->is_alive())
-        {
-            looting(target);
-            std::cout << target->get_name() << " is dead." << std::endl;
-            std::cout << "Ressources earned : " << std::endl;
-            target->get_ressources().info();
-        }
-        
-    }
-}
+    Coord targetLocation = target.getLocation();
 
-void Character::move(std::string dir)
-{
-    if (dir == "up")
-    {
-        std::cout << this->p_name << " moves upwards " << "(" << p_x << "," << p_y << ") -> (";
-        p_y -= p_velocity;
-        std::cout << p_x << "," << p_y << ")" << std::endl;
-    }
-    else if (dir == "down")
-    {
-        std::cout << this->p_name << " moves " << dir << "(" << p_x << "," << p_y << ") -> (";
-        p_y += p_velocity;
-        std::cout << p_x << "," << p_y << ")" << std::endl;
-    }
-    else if (dir == "right")
-    {
-        std::cout << this->p_name << " moves to the " << dir << "(" << p_x << "," << p_y << ") -> (";
-        p_x += p_velocity;
-        std::cout << p_x << "," << p_y << ")" << std::endl;
-    }
-    else if (dir == "left")
-    {
-        std::cout << this->p_name << " moves to the " << dir << "(" << p_x << "," << p_y << ") -> (";
-        p_x -= p_velocity;
-        std::cout << p_x << "," << p_y << ")" << std::endl;
-    }
-}
+    int deltaX = currentLocation.getX() - targetLocation.getX();
+    int deltaY = currentLocation.getY() - targetLocation.getY();
 
-void Character::random_move()
-{
-    Random generator(0,4);
-    this->move(Const::DIRECTIONS[generator.getRandomNumber()]);
-}
+    double distance = std::sqrt(deltaX * deltaX + deltaY * deltaY);
 
-bool Character::reachable(Character* other)
-{
-    return distance(this, other) <= p_weapon_equipped.get_reach();
-}
+    
+    int moveX = static_cast<int>(std::round((deltaX / distance) * getVelocity()));
+    int moveY = static_cast<int>(std::round((deltaY / distance) * getVelocity()));
 
-void Character::approach(Character* target) {
-    int dx = target->get_x() - p_x;
-    int dy = target->get_y() - p_y;
-
-    if (std::abs(dx) > std::abs(dy)) {
-        // Déplacement horizontal
-        if ((dx > 0))
-        {
-            move("right");
-        }else{
-            move("left");
-        }
-    } else {
-        // Déplacement vertical
-        if ((dy > 0))
-        {
-            move("down");
-        }else{
-            move("up");
-        }
-    }
-}
-
-void Character::move_away(Character* target) {
-    // Calculer la différence entre les coordonnées actuelles et celles de la cible
-    int dx = target->get_x() - p_x;
-    int dy = target->get_y() - p_y;
-
-    // Choisir la direction principale (priorité à l'axe le plus éloigné)
-    if (std::abs(dx) > std::abs(dy)) {
-        // Déplacement horizontal
-        if ((dx > 0))
-        {
-            move("left");
-        }else{
-            move("right");
-        }
-    } else {
-        // Déplacement vertical
-        if ((dy > 0))
-        {
-            move("up");
-        }else{
-            move("down");
-        }
-    }
-}
-
-void Character::looting(Character* other)
-{
-    p_ressources.add_loot(other->get_ressources());
-}
-
-//----------------------------------------------------------//
-
-double distance(Character* obj1, Character* obj2) {
-    return std::sqrt(std::pow(obj2->get_x() - obj1->get_x(), 2) + std::pow(obj2->get_y() - obj1->get_y(), 2));
+    return move(-moveX, -moveY);
 }

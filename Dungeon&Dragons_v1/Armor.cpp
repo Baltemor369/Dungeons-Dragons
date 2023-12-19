@@ -1,12 +1,15 @@
-#include "Armor.h"
+#include "../headers/Armor.h"
 
-Armor::Armor(const Armor &other)
-{
-    p_name = other.p_name;
-    p_physical_resistance = other.p_physical_resistance;
+Armor::Armor(std::string name, int protection) : Object(name, "Armor"), protection_(protection) {}
+
+int Armor::getProtection() const {
+    return protection_;
 }
 
-void Armor::info()
-{
-    std::cout << "Armor => " << p_name << ": Physical Resistance("<< std::to_string(p_physical_resistance) <<")\n";
+void Armor::setProtection(int protection) {
+    protection_ = protection;
+}
+
+std::string Armor::info() const {
+    return "Armor: " + getName() + ", Type: " + getType() + ", Protection: " + std::to_string(protection_);
 }
