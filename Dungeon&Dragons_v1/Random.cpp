@@ -1,4 +1,4 @@
-#include "Random.h"
+#include "../headers/Random.h"
 
 Random::Random(int min, int max):p_distribution(min,max), p_generator(p_rd())
 {
@@ -13,18 +13,18 @@ int Random::getRandomNumber()
     return p_distribution(p_generator);
 }
 
-void Random::set_min(int min)
+void Random::setMin(int min)
 {
     p_distribution = std::uniform_int_distribution<int>(min, p_distribution.max());
 }
 
-void Random::set_max(int max)
+void Random::setMax(int max)
 {
     p_distribution = std::uniform_int_distribution<int>(p_distribution.min(), max);
 }
 
-void Random::set_border(int min, int max)
+void Random::setBorder(int min, int max)
 {
-    this->set_min(min);
-    this->set_max(max);
+    this->setMin(min);
+    this->setMax(max);
 }

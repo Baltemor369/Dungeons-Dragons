@@ -16,9 +16,9 @@ public:
     
     int getRandomNumber();
 
-    void set_min(int min);
-    void set_max(int max);
-    void set_border(int min, int max);
+    void setMin(int min);
+    void setMax(int max);
+    void setBorder(int min, int max);
 };
 
 #endif
