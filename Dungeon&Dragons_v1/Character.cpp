@@ -1,20 +1,28 @@
 #include "../headers/Character.h"
 
-Character::Character(std::string name, int x, int y, int hp, int velocity, std::string weaponName, int weaponDamage):name_(name), location_(x,y), hp_(hp), velocity_(velocity), equipedWeapon_(0)
+Character::Character(std::string name, int x, int y, int hp, int velocity, std::string weaponName, int weaponDamage, std::string armorName, int armorProtection):name_(name), location_(x,y), hp_(hp), velocity_(velocity), equipedWeapon_(0), equipedArmor_(0)
 {
     equipedWeapon_ = new Weapon(weaponName, weaponDamage);
+    equipedArmor_ = new Armor(armorName, armorProtection);
+}
+
+Character::Character(std::string name, std::string weaponName, int weaponDamage):name_(name), location_(0,0), hp_(100), velocity_(1), equipedWeapon_(0), equipedArmor_(0)
+{
+    equipedWeapon_ = new Weapon(weaponName, weaponDamage);
+    equipedArmor_ = new Armor();
 }
 
 Character::~Character()
 {
     inventory_.clearInventory();
     delete equipedWeapon_;
+    delete equipedArmor_;
 }
 
 std::string Character::info()const
 {
     std::string text;
-    text = name_ + getLocation().get() + ": hp(" + std::to_string(hp_) + "), velocity(" + std::to_string(velocity_) + ")\n" + equipedWeapon_->info() + inventory_.info();
+    text = name_ + getLocation().get() + ": hp(" + std::to_string(hp_) + "), velocity(" + std::to_string(velocity_) + ")\n" + equipedWeapon_->info() + equipedArmor_->info() + inventory_.info();
     return text;
 }
 
@@ -69,6 +77,9 @@ void Character::removeFromInventory(Object* item) {
 }
 
 std::string Character::approachCharacter(const Character& target) {
+    std::string text;
+    text = name_ + location_.get() + " is approaching " + target.getName() + target.getLocation().get() + "\n";
+
     Coord currentLocation = getLocation();
 
     Coord targetLocation = target.getLocation();
@@ -80,20 +91,27 @@ std::string Character::approachCharacter(const Character& target) {
 
     if (distance >= getVelocity()) {
         std::string direction;
-        if (deltaX != 0 && std::abs(deltaX) > std::abs(deltaY))
+        if (deltaX != 0 or deltaY !=0)
         {
-            direction = (deltaX > 0) ? "right" : "left";            
-        }
-        if(deltaY !=0 && std::abs(deltaX) < std::abs(deltaY)){
-            direction = (deltaY > 0) ? "up" : "down";
+            if (std::abs(deltaX) > std::abs(deltaY))
+            {
+                direction = (deltaX > 0) ? "right" : "left";            
+            }else{
+                direction = (deltaY > 0) ? "up" : "down";
+            }
         }
         
-        return name_ + " is approaching " + target.getName() + "\n" + move(direction);
+        
+        
+        return text + move(direction);
     }
     return name_ + " can reach " + target.getName() + "\n";
 }
 
 std::string Character::fleeCharacter(const Character& target) {
+    std::string text;
+    text = name_ + location_.get() + " is moving away from " + target.getName() + target.getLocation().get() + "\n";
+
     Coord currentLocation = getLocation();
 
     Coord targetLocation = target.getLocation();
@@ -109,6 +127,30 @@ std::string Character::fleeCharacter(const Character& target) {
         direction = (deltaY > 0) ? "up" : "down";
     }
     
+    return text + move(direction);
+}
 
-    return name_ + " is moving away from " + target.getName() + "\n" + move(direction);
+std::string Character::attack(Character *target){
+    if (this->isAlive())
+    {
+        if(location_ == target->getLocation()){
+            target->dealDamage(equipedWeapon_->getDamage());
+            std::string text = getName() + " is attacking " + target->getName() + "(" +  std::to_string(target->getHp()) + "HP remaining)\n";
+            if(!target->isAlive()){
+                text += target->getName() + " is dead.\n";
+            }
+            return text;
+        }else{
+            return target->getName() + " is too far away.\n";
+        }
+    }
+    return "";
+}
+
+void Character::dealDamage(int damage){
+    hp_ -= damage - equipedArmor_->getProtection();
+    if (hp_<0)
+    {
+        hp_ = 0;
+    }
 }

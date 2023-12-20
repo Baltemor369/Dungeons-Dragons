@@ -15,9 +15,11 @@ private:
     int hp_, velocity_;
     Coord location_;
     Inventory inventory_;
-    Weapon* equipedWeapon_; 
+    Weapon* equipedWeapon_;
+    Armor* equipedArmor_;
 public:
-    Character(std::string name, int x=0, int y=0, int hp=100, int velocity=1, std::string weaponName="Hands", int weaponDamage=1);
+    Character(std::string name, int x=0, int y=0, int hp=100, int velocity=1, std::string weaponName="Hands", int weaponDamage=1, std::string armorName="Clothes", int armorProtection=1);
+    Character(std::string name, std::string weaponName, int weaponDamage);
     ~Character();
 
     std::string info()const;
@@ -50,5 +52,14 @@ public:
     Weapon* getWeapon(){ return equipedWeapon_ ; }
     void setWeapon(Weapon* w){ equipedWeapon_ = w ; }
     std::string infoWeapon()const{return equipedWeapon_->info();}
+    
     // armor
+    Armor* getArmor(){ return equipedArmor_ ; }
+    void setArmor(Armor* a){ equipedArmor_ = a ; }
+    std::string infoArmor()const{return equipedArmor_->info();}
+
+    // attack
+    bool isAlive()const{return (hp_>0);}
+    std::string attack(Character *target);
+    void dealDamage(int damage);
 };
