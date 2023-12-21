@@ -1,15 +1,21 @@
 #include "../headers/Character.h"
 
-Character::Character(std::string name, int x, int y, int hp, int velocity, std::string weaponName, int weaponDamage, std::string armorName, int armorProtection):name_(name), location_(x,y), hp_(hp), velocity_(velocity), equipedWeapon_(0), equipedArmor_(0)
-{
-    equipedWeapon_ = new Weapon(weaponName, weaponDamage);
-    equipedArmor_ = new Armor(armorName, armorProtection);
-}
+Character::Character(std::string name, int x, int y, int hp, int velocity,Weapon* weapon, Armor* armor):name_(name), location_(x,y), hp_(hp), velocity_(velocity), equipedWeapon_(weapon), equipedArmor_(armor){}
 
-Character::Character(std::string name, std::string weaponName, int weaponDamage):name_(name), location_(0,0), hp_(100), velocity_(1), equipedWeapon_(0), equipedArmor_(0)
+Character::Character(std::string name, std::string armorName, int armorProtection, std::string weaponName, int weaponDamage):name_(name), location_(0,0), hp_(100), velocity_(1)
 {
     equipedWeapon_ = new Weapon(weaponName, weaponDamage);
+    equipedArmor_ = new Armor( armorName, armorProtection);
+}
+Character::Character(std::string name, Weapon* weapon, Armor* armor):name_(name), location_(0,0), hp_(100), velocity_(1), equipedWeapon_(weapon), equipedArmor_(armor){}
+
+Character::Character(std::string name, Weapon* weapon):name_(name), location_(0,0), hp_(100), velocity_(1), equipedWeapon_(weapon)
+{
     equipedArmor_ = new Armor();
+}
+Character::Character(std::string name, Armor* armor):name_(name), location_(0,0), hp_(100), velocity_(1), equipedArmor_(armor)
+{
+    equipedWeapon_ = new Weapon();
 }
 
 Character::~Character()
@@ -120,28 +126,23 @@ std::string Character::fleeCharacter(const Character& target) {
     int deltaY = currentLocation.getY() - targetLocation.getY();
 
     std::string direction;
-    if (std::abs(deltaX) < std::abs(deltaY))
-    {
-        direction = (deltaX > 0) ? "right" : "left";
-    }else{
-        direction = (deltaY > 0) ? "up" : "down";
-    }
+    direction = (std::abs(deltaX) < std::abs(deltaY)) ? ((deltaX > 0) ? "right" : "left") : ((deltaY > 0)? "up" : "down");
     
     return text + move(direction);
 }
 
-std::string Character::attack(Character *target){
+std::string Character::attack(Character& target){
     if (this->isAlive())
     {
-        if(location_ == target->getLocation()){
-            target->dealDamage(equipedWeapon_->getDamage());
-            std::string text = getName() + " is attacking " + target->getName() + "(" +  std::to_string(target->getHp()) + "HP remaining)\n";
-            if(!target->isAlive()){
-                text += target->getName() + " is dead.\n";
+        if(location_ == target.getLocation()){
+            target.dealDamage(equipedWeapon_->getDamage());
+            std::string text = getName() + " is attacking " + target.getName() + "(" +  std::to_string(target.getHp()) + "HP remaining)\n";
+            if(!target.isAlive()){
+                text += target.getName() + " is dead.\n";
             }
             return text;
         }else{
-            return target->getName() + " is too far away.\n";
+            return target.getName() + " is too far away.\n";
         }
     }
     return "";
