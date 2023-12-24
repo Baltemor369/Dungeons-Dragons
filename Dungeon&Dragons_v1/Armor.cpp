@@ -11,5 +11,5 @@ void Armor::setProtection(int protection) {
 }
 
 std::string Armor::info() const {
-    return "Armor: " + getName() + ", Type: " + getType() + ", Protection: " + std::to_string(protection_);
+    return "Armor: " + getName() + ", Type: " + getType() + ", Protection: " + std::to_string(protection_) + "\n";
 }

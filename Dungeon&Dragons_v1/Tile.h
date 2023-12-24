@@ -2,25 +2,29 @@
 
 #include <vector>
 
-#include "Coord.h"
-#include "Character.h"
+#include "Group.h"
 
 class Tile
 {
 private:
     bool visited_;
     Coord location_;
-    std::vector<Character*> people_;
+    Group people_;
 public:
     Tile(int x, int y, bool visited=false);
     ~Tile();
-    bool isVisited()const{return visited_;}
+    // Get all the characters on this tile
+    Group getPeople()const { return people_;}
+    int getX()const { return location_.getX();}
+    int getY()const { return location_.getY();}
     const Coord& getLocation()const {return location_;}
+    bool isVisited()const{return visited_;}
+
     void setAsVisited(){visited_ = true;}
     // Add a character to the tile's list of characters
-    void addPerson(Character *person);
+    void enterPerson(Character *person);
     // Remove a character from the tile's list of characters
-    void removePerson(Character *person);
-    // Get all the characters on this tile
-    std::vector<Character*> getPeopleOnThisTile()const { return people_;}
+    void exitPerson(Character *person);
+    // Remove all characters from the tile
+    void clearPeople();
 };

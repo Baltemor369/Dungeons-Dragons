@@ -11,11 +11,17 @@
 class Inventory
 {
 private:
+    std::string name_;
     std::vector<Object*> items_;
 public:
-    Inventory();
+    Inventory(std::string name="Backpack");
     ~Inventory();
     std::string info() const;
+
+    std::string getName()const{return name_;}
+
+    void setName(std::string newName){name_ = newName;}
+
     void addItem(Object* item);
     void removeItem(Object* item);
     void removeItem(int index);

@@ -1,34 +1,24 @@
 #include "../headers/Character.h"
 
-Character::Character(std::string name, int x, int y, int hp, int velocity,Weapon* weapon, Armor* armor):name_(name), location_(x,y), hp_(hp), velocity_(velocity), equipedWeapon_(weapon), equipedArmor_(armor){}
-
-Character::Character(std::string name, std::string armorName, int armorProtection, std::string weaponName, int weaponDamage):name_(name), location_(0,0), hp_(100), velocity_(1)
+Character::Character(std::string name):name_(name), hp_(100), velocity_(1), location_(0,0)
 {
-    equipedWeapon_ = new Weapon(weaponName, weaponDamage);
-    equipedArmor_ = new Armor( armorName, armorProtection);
-}
-Character::Character(std::string name, Weapon* weapon, Armor* armor):name_(name), location_(0,0), hp_(100), velocity_(1), equipedWeapon_(weapon), equipedArmor_(armor){}
-
-Character::Character(std::string name, Weapon* weapon):name_(name), location_(0,0), hp_(100), velocity_(1), equipedWeapon_(weapon)
-{
-    equipedArmor_ = new Armor();
-}
-Character::Character(std::string name, Armor* armor):name_(name), location_(0,0), hp_(100), velocity_(1), equipedArmor_(armor)
-{
+    inventory_ = new Inventory("Backpack");
     equipedWeapon_ = new Weapon();
+    equipedArmor_ = new Armor();
 }
 
 Character::~Character()
 {
-    inventory_.clearInventory();
+    inventory_->clearInventory();
     delete equipedWeapon_;
     delete equipedArmor_;
+    delete inventory_;
 }
 
 std::string Character::info()const
 {
     std::string text;
-    text = name_ + getLocation().get() + ": hp(" + std::to_string(hp_) + "), velocity(" + std::to_string(velocity_) + ")\n" + equipedWeapon_->info() + equipedArmor_->info() + inventory_.info();
+    text = name_ + getLocation().get() + ": hp(" + std::to_string(hp_) + "), velocity(" + std::to_string(velocity_) + ")\n" + equipedWeapon_->info() + equipedArmor_->info() + inventory_->info();
     return text;
 }
 
@@ -53,16 +43,16 @@ std::string Character::move(std::string direction) {
     int deltaX(0);
     int deltaY(0);
 
-    if (direction == "up")
+    if (isIn(direction, {"u", "up"}))
     {
         deltaY = velocity_;
-    }else if (direction == "right")
+    }else if (isIn(direction, {"r", "right"}))
     {
         deltaX = velocity_;
-    }else if (direction == "left")
+    }else if (isIn(direction, {"l", "left"}))
     {
         deltaX = -velocity_;
-    }else if (direction == "down")
+    }else if (isIn(direction, {"d", "down"}))
     {
         deltaY = -velocity_;
     }
@@ -75,11 +65,11 @@ std::string Character::move(std::string direction) {
 }
 
 void Character::addToInventory(Object* item) {
-    inventory_.addItem(item);
+    inventory_->addItem(item);
 }
 
 void Character::removeFromInventory(Object* item) {
-    inventory_.removeItem(item);
+    inventory_->removeItem(item);
 }
 
 std::string Character::approachCharacter(const Character& target) {

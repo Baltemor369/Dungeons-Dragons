@@ -1,6 +1,6 @@
 #include "../headers/Inventory.h"
 
-Inventory::Inventory()
+Inventory::Inventory(std::string name):name_(name)
 {}
 
 Inventory::~Inventory()
@@ -13,12 +13,18 @@ void Inventory::addItem(Object* item) {
 }
 
 std::string Inventory::info() const {
-    std::string text("Inventory Contents:\n");
-    int i(0);
-    for (const auto& item : items_) {
-        text += std::to_string(i) + " " + item->info() + "\n";
-        ++i;
+    std::string text(name_ + " Contents:\n");
+    if (items_.size()==0)
+    {
+        text += "Empty\n";
+    }else{
+        int i(0);
+        for (const auto& item : items_) {
+            text += std::to_string(i) + " " + item->info() + "\n";
+            ++i;
+        }
     }
+    
     return text;
 }
 

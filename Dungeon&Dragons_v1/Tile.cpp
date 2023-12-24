@@ -8,14 +8,14 @@ Tile::~Tile()
 {
 }
 
-void Tile::addPerson(Character *person){
-    people_.push_back(person);
+void Tile::enterPerson(Character *person){
+    people_.addCharacter(person);
 }
 
-void Tile::removePerson(Character *person){
-    for (auto it = people_.begin(); it != people_.end(); ++it){
-        if (*it == person){
-            people_.erase(it);
-        }
-    }
+void Tile::exitPerson(Character *person){
+    people_.removeCharacter(person->getName());
+}
+
+void Tile::clearPeople(){
+    people_.clear();
 }

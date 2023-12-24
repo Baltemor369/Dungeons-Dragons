@@ -4,6 +4,7 @@
 #include "Object.h"
 #include "Inventory.h"
 #include "Weapon.h"
+#include "strFct.h"
 
 #include <string>
 #include <cmath>
@@ -14,15 +15,11 @@ private:
     std::string name_;
     int hp_, velocity_;
     Coord location_;
-    Inventory inventory_;
+    Inventory* inventory_;
     Weapon* equipedWeapon_;
     Armor* equipedArmor_;
 public:
-    Character(std::string name, int x=0, int y=0, int hp=100, int velocity=1,Weapon* weapon=new Weapon(), Armor* armor=new Armor());
-    Character(std::string name, std::string armorName, int armorProtection, std::string weaponName, int weaponDamage);
-    Character(std::string name, Weapon* weapon, Armor* armor);
-    Character(std::string name, Weapon* weapon);
-    Character(std::string name, Armor* armor);
+    Character(std::string name);
     ~Character();
 
     std::string info()const;
@@ -49,16 +46,16 @@ public:
     // inventory
     void addToInventory(Object* item);
     void removeFromInventory(Object* item);
-    std::string infoInventory() const{return inventory_.info();}
+    std::string infoInventory() const{return inventory_->info();}
 
     // weapon 
     Weapon* getWeapon(){ return equipedWeapon_ ; }
-    void setWeapon(Weapon* w){ equipedWeapon_ = w ; }
+    void equipWeapon(Weapon* w){ equipedWeapon_ = w ; }
     std::string infoWeapon()const{return equipedWeapon_->info();}
     
     // armor
     Armor* getArmor(){ return equipedArmor_ ; }
-    void setArmor(Armor* a){ equipedArmor_ = a ; }
+    void equipArmor(Armor* a){ equipedArmor_ = a ; }
     std::string infoArmor()const{return equipedArmor_->info();}
 
     // attack
