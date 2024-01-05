@@ -14,6 +14,7 @@ private:
     bool running_;
     bool canFight_;
     bool canLoot_;
+    bool canInventory;
     int turn_;
     int nbEnnemies_;
     Random rd_;

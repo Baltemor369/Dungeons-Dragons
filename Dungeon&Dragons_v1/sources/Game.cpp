@@ -18,7 +18,7 @@ void Game::loop(){
         std::string text;
         if (lower(playerChoice_) == "")
         {
-            text = "\nAction : Info - Move";
+            text = "\nAction : Info - Move - Stuff";
             if (!map_.getTile(player_.getX(), player_.getY())->isAlone())
             {
                 canFight_ = true;
@@ -113,6 +113,28 @@ void Game::loop(){
             {
                 playerChoice_ = "";
             }
+        }
+        // stuff management
+        else if(isIn(lower(playerChoice_), {"s","stuff"})){
+            auto invent = player_.getInventory();
+            std::cout << invent->info();
+            std::string text("Action : ");
+            if (invent->nbWeapons())
+            {
+                text += "equip #weaponId ";
+            }
+            if (invent->nbArmors())
+            {
+                text += "- equip #armorId";
+            }
+            text += " - Exit\n->";
+            std::cout << text;
+
+            std::string stuffChoice;
+            getline(std::cin, stuffChoice);
+
+            playerChoice_ = "";
+            
         }
         // menu player fight
         else if (canFight_ && isIn(lower(playerChoice_), {"f","fight"}))

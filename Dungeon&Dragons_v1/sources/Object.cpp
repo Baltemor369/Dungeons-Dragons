@@ -1,6 +1,6 @@
 #include "../headers/Object.h"
 
-Object::Object(std::string id, std::string name, std::string type) :id_(id), name_(name), type_(type) {}
+Object::Object(std::string name, std::string type, std::string id=Const::OBJECT) :id_(id), name_(name), type_(type) {}
 Object::Object(const Object& obj){
     this->id_ = obj.getId();
     this->name_ = obj.getName();

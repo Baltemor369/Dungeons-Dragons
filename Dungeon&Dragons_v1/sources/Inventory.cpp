@@ -42,6 +42,37 @@ std::string Inventory::info() const {
     return text;
 }
 
+int Inventory::nbWeapons()const{
+    int nb(0);
+    for(auto elt : items_){
+        if (elt->getType() == Const::WEAPON)
+        {
+            ++nb;
+        }
+    }
+    return nb;
+}
+int Inventory::nbArmors()const{
+    int nb(0);
+    for(auto elt : items_){
+        if (elt->getType() == Const::ARMOR)
+        {
+            ++nb;
+        }
+    }
+    return nb;
+}
+int Inventory::nbObjects()const{
+    int nb(0);
+    for(auto elt : items_){
+        if (elt->getType() == Const::OBJECT)
+        {
+            ++nb;
+        }
+    }
+    return nb;
+}
+
 void Inventory::addItem(Object& item) {
     items_.push_back(&item);
 }

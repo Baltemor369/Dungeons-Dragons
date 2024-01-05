@@ -23,6 +23,9 @@ public:
 
     std::string getName()const{return name_;}
     int size()const{return items_.size();}
+    int nbWeapons()const;
+    int nbArmors()const;
+    int nbObjects()const;
 
     void setName(std::string newName){name_ = newName;}
 
