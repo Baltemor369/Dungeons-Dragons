@@ -34,4 +34,5 @@ public:
     void removeItem(std::string name); // remove a item found with its name
     Object* getItem(std::string name); // return the object address 
     std::vector<Object*> getItems()const{return items_;} // return the list of Objects
+    void craft();
 };

@@ -14,7 +14,6 @@ TODO :
 - add Events
 
 NEXT MISSION :
-1 - refaire object ID : "name + id" ex "sword0"
 3 - créer le crafting
 4 - créer les objet pour le jeu (minerais - composants)
 */

@@ -70,3 +70,7 @@ Object* Inventory::getItem(std::string name){
     }
     return nullptr;
 }
+
+void Inventory::craft(){
+
+}

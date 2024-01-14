@@ -12,6 +12,10 @@ Game::~Game()
 {
 }
 
+void Game::init(){
+    
+}
+
 void Game::loop(){
     while (running_)
     {
@@ -235,7 +239,10 @@ void Game::loop(){
             }
             playerChoice_ = "l";
         }
-        
+        else if (isIn(lower(playerChoice_),{"crafting"}))
+        {
+            
+        }
         // create something
         else if (isIn(lower(playerChoice_), {"c", "create"}))
         {
