@@ -14,10 +14,10 @@ Entity::Entity(std::string name, int x, int y):name_(name), hp_(100), velocity_(
     equipedArmor_ = new Armor();
 }
 
-Entity::Entity(std::string name, std::string weaponName, int weaponDamage):name_(name), hp_(100), velocity_(1), location_(0,0)
+Entity::Entity(std::string name, std::string weaponName, int weaponDamage, int weaponPenetration):name_(name), hp_(100), velocity_(1), location_(0,0)
 {
     inventory_ = new Inventory("Backpack");
-    equipedWeapon_ = new Weapon(weaponName, weaponDamage);
+    equipedWeapon_ = new Weapon(weaponName, weaponDamage, weaponPenetration);
     equipedArmor_ = new Armor();
 }
 
@@ -28,17 +28,17 @@ Entity::Entity(std::string name, int armorDef, std::string armorName):name_(name
     equipedArmor_ = new Armor(armorName, armorDef);
 }
 
-Entity::Entity(std::string name, std::string weaponName, int weaponDamage, std::string armorName, int armorDef):name_(name), hp_(100), velocity_(1), location_(0,0)
+Entity::Entity(std::string name, std::string weaponName, int weaponDamage, int weaponPenetration, std::string armorName, int armorDef):name_(name), hp_(100), velocity_(1), location_(0,0)
 {
     inventory_ = new Inventory("Backpack");
-    equipedWeapon_ = new Weapon(weaponName, weaponDamage);
+    equipedWeapon_ = new Weapon(weaponName, weaponDamage, weaponPenetration);
     equipedArmor_ = new Armor(armorName, armorDef);
 }
 
-Entity::Entity(std::string name, int x, int y, std::string weaponName, int weaponDamage, std::string armorName, int armorDef):name_(name), hp_(100), velocity_(1), location_(x,y)
+Entity::Entity(std::string name, int x, int y, std::string weaponName, int weaponDamage, int weaponPenetration, std::string armorName, int armorDef):name_(name), hp_(100), velocity_(1), location_(x,y)
 {
     inventory_ = new Inventory("Backpack");
-    equipedWeapon_ = new Weapon(weaponName, weaponDamage);
+    equipedWeapon_ = new Weapon(weaponName, weaponDamage, weaponPenetration);
     equipedArmor_ = new Armor(armorName, armorDef);
 }
 
@@ -75,16 +75,16 @@ std::string Entity::move(std::string direction) {
     int deltaX(0);
     int deltaY(0);
 
-    if (isIn(direction, Key::FR_KEY_UP))
+    if (isIn(direction, Key::FR::KEY_UP))
     {
         deltaY = velocity_;
-    }else if (isIn(direction, Key::FR_KEY_RIGHT))
+    }else if (isIn(direction, Key::FR::KEY_RIGHT))
     {
         deltaX = velocity_;
-    }else if (isIn(direction, Key::FR_KEY_LEFT))
+    }else if (isIn(direction, Key::FR::KEY_LEFT))
     {
         deltaX = -velocity_;
-    }else if (isIn(direction, Key::FR_KEY_DOWN))
+    }else if (isIn(direction, Key::FR::KEY_DOWN))
     {
         deltaY = -velocity_;
     }
@@ -175,8 +175,9 @@ void Entity::unequipArmor(){
     equipedArmor_ = nullptr;
 }
 
-void Entity::dealDamage(int damage){
-    hp_ -= damage - equipedArmor_->getProtection();
+void Entity::dealDamage(Weapon* weap){
+    hp_ -= weap->gePenetringArmor();
+    hp_ -= (weap->getDamage() - equipedArmor_->getDefense() >= 0 ) ? weap->getDamage() - equipedArmor_->getDefense() : 0;
     if (hp_<0)
     {
         hp_ = 0;
@@ -188,7 +189,7 @@ std::string Entity::attack(Entity& target){
     {
         if(location_ == target.getLocation()){
             int hp_mem(target.getHp());
-            target.dealDamage(equipedWeapon_->getDamage());
+            target.dealDamage(equipedWeapon_);
             std::string text = getName() + " is attacking " + target.getName() + "\nDamage : " + std::to_string(hp_mem-target.getHp()) + ", " +  std::to_string(target.getHp()) + "HP remaining)\n";
             if(!target.isAlive()){
                 text += target.getName() + " is dead.\n";

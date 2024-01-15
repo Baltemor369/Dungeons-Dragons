@@ -4,7 +4,6 @@
 #include "Inventory.h"
 #include "Weapon.h"
 #include "strFct.h"
-#include "constants.h"
 #include "Random.h"
 
 #include <string>
@@ -23,10 +22,10 @@ private:
 public:
     Entity(std::string name); // default constructor 
     Entity(std::string name, int x, int y); // specific location
-    Entity(std::string name, std::string weaponName, int weaponDamage); // specific weapon
+    Entity(std::string name, std::string weaponName, int weaponDamage, int weaponPenetration); // specific weapon
     Entity(std::string name, int armorDef, std::string armorName); // specific armor
-    Entity(std::string name, std::string weaponName, int weaponDamage, std::string armorName, int armorDef); // sepcific armor and weapon
-    Entity(std::string name, int x, int y, std::string weaponName, int weaponDamage, std::string armorName, int armorDef); // sepcific all
+    Entity(std::string name, std::string weaponName, int weaponDamage, int weaponPenetration, std::string armorName, int armorDef); // sepcific armor and weapon
+    Entity(std::string name, int x, int y, std::string weaponName, int weaponDamage, int weaponPenetration, std::string armorName, int armorDef); // sepcific all
     ~Entity();
 
     std::string recap()const;
@@ -67,5 +66,5 @@ public:
     // attack
     bool isAlive()const{return (hp_>0);} // return true if entity is alive else not
     std::string attack(Entity& target); // attack the target by giving our weapon's damage
-    void dealDamage(int damage); // calculate the damage receive with reduce by protection
+    void dealDamage(Weapon* weap); // calculate the damage receive with reduce by protection
 };

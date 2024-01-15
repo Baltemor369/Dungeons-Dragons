@@ -25,5 +25,7 @@ public:
     Game(std::string playerName);
     ~Game();
 
+    std::string input();
+    int inputInt(int defaultValue);
     void loop();
 };

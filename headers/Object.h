@@ -8,7 +8,7 @@ private:
     std::vector<std::string> recipe_;
 
 public:
-    Object(std::string name="", std::vector<std::string> recipe={}, std::string type=Const::OBJECT):name_(name), recipe_(recipe), type_(type){}
+    Object(std::string name="", std::string type=Const::OBJECT):name_(name), type_(type){}
     Object(const Object& obj);
     ~Object();
 

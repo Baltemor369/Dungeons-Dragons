@@ -2,7 +2,6 @@
 
 #include "Coord.h"
 #include "Group.h"
-#include "constants.h"
 
 class Tile {
 private:
