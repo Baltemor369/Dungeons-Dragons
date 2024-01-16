@@ -14,6 +14,8 @@ TODO :
 - add Events
 
 NEXT MISSION :
+1 - refaire looting 
+2 - empêcher le doublon de nom -> list des noms existants ?
 3 - créer le crafting
 4 - créer les objet pour le jeu (minerais - composants)
 */

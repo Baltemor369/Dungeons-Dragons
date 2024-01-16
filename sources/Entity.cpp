@@ -3,43 +3,29 @@
 Entity::Entity(std::string name):name_(name), hp_(100), velocity_(1), location_(0,0)
 {
     inventory_ = new Inventory("Backpack");
-    equipedWeapon_ = new Weapon();
-    equipedArmor_ = new Armor();
+    equipedWeapon_ = new Weapon(Const::DEFAULT_WEAPON_NAME, Const::DEFAULT_WEAPON_DAMAGE, Const::DEFAULT_WEAPON_PENETRING, Const::DEFAULT_WEAPON_VAMPIRISM);
+    equipedArmor_ = new Armor(Const::DEFAULT_ARMOR_NAME, Const::DEFAULT_ARMOR_DEFENSE, Const::DEFAULT_ARMOR_THORN, Const::DEFAULT_ARMOR_REGENERATION);
 }
 
 Entity::Entity(std::string name, int x, int y):name_(name), hp_(100), velocity_(1), location_(x,y)
 {
     inventory_ = new Inventory("Backpack");
-    equipedWeapon_ = new Weapon();
-    equipedArmor_ = new Armor();
+    equipedWeapon_ = new Weapon(Const::DEFAULT_WEAPON_NAME, Const::DEFAULT_WEAPON_DAMAGE, Const::DEFAULT_WEAPON_PENETRING, Const::DEFAULT_WEAPON_VAMPIRISM);
+    equipedArmor_ = new Armor(Const::DEFAULT_ARMOR_NAME, Const::DEFAULT_ARMOR_DEFENSE, Const::DEFAULT_ARMOR_THORN, Const::DEFAULT_ARMOR_REGENERATION);
 }
 
-Entity::Entity(std::string name, std::string weaponName, int weaponDamage, int weaponPenetration):name_(name), hp_(100), velocity_(1), location_(0,0)
+Entity::Entity(std::string name, std::string weaponName, int weaponDamage, int weaponPenetration, int weaponVampirism, std::string armorName, int armorDef, int armorThorn, int armorRegeneration):name_(name), hp_(100), velocity_(1), location_(0,0)
 {
     inventory_ = new Inventory("Backpack");
-    equipedWeapon_ = new Weapon(weaponName, weaponDamage, weaponPenetration);
-    equipedArmor_ = new Armor();
+    equipedWeapon_ = new Weapon(weaponName, weaponDamage, weaponPenetration, weaponVampirism);
+    equipedArmor_ = new Armor(armorName, armorDef, armorThorn, armorRegeneration);
 }
 
-Entity::Entity(std::string name, int armorDef, std::string armorName):name_(name), hp_(100), velocity_(1), location_(0,0)
+Entity::Entity(std::string name, int x, int y, std::string weaponName, int weaponDamage, int weaponPenetration, int weaponVampirism, std::string armorName, int armorDef, int armorThorn, int armorRegeneration):name_(name), hp_(100), velocity_(1), location_(x,y)
 {
     inventory_ = new Inventory("Backpack");
-    equipedWeapon_ = new Weapon();
-    equipedArmor_ = new Armor(armorName, armorDef);
-}
-
-Entity::Entity(std::string name, std::string weaponName, int weaponDamage, int weaponPenetration, std::string armorName, int armorDef):name_(name), hp_(100), velocity_(1), location_(0,0)
-{
-    inventory_ = new Inventory("Backpack");
-    equipedWeapon_ = new Weapon(weaponName, weaponDamage, weaponPenetration);
-    equipedArmor_ = new Armor(armorName, armorDef);
-}
-
-Entity::Entity(std::string name, int x, int y, std::string weaponName, int weaponDamage, int weaponPenetration, std::string armorName, int armorDef):name_(name), hp_(100), velocity_(1), location_(x,y)
-{
-    inventory_ = new Inventory("Backpack");
-    equipedWeapon_ = new Weapon(weaponName, weaponDamage, weaponPenetration);
-    equipedArmor_ = new Armor(armorName, armorDef);
+    equipedWeapon_ = new Weapon(weaponName, weaponDamage, weaponPenetration, weaponVampirism);
+    equipedArmor_ = new Armor(armorName, armorDef, armorThorn, armorRegeneration);
 }
 
 Entity::~Entity()
@@ -175,13 +161,9 @@ void Entity::unequipArmor(){
     equipedArmor_ = nullptr;
 }
 
-void Entity::dealDamage(Weapon* weap){
-    hp_ -= weap->gePenetringArmor();
-    hp_ -= (weap->getDamage() - equipedArmor_->getDefense() >= 0 ) ? weap->getDamage() - equipedArmor_->getDefense() : 0;
-    if (hp_<0)
-    {
-        hp_ = 0;
-    }
+void Entity::dealDamage(int damage){
+    hp_ -= damage;
+    hp_ = (hp_ < 0) ? 0 : hp_;
 }
 
 std::string Entity::attack(Entity& target){
@@ -189,7 +171,19 @@ std::string Entity::attack(Entity& target){
     {
         if(location_ == target.getLocation()){
             int hp_mem(target.getHp());
-            target.dealDamage(equipedWeapon_);
+            
+            // true damage
+            int trueDamage = std::round(getWeapon()->getDamage()*getWeapon()->getLethality());
+            target.dealDamage(trueDamage);
+            
+            // normal damage
+            int damage = getWeapon()->getDamage() - target.getArmor()->getDefense();
+            damage = (damage < 0) ? 0 : damage;
+            target.dealDamage(damage);
+
+            // Vampirism
+            hp_ += getWeapon()->getDamage() * getWeapon()->getVampirism();
+            
             std::string text = getName() + " is attacking " + target.getName() + "\nDamage : " + std::to_string(hp_mem-target.getHp()) + ", " +  std::to_string(target.getHp()) + "HP remaining)\n";
             if(!target.isAlive()){
                 text += target.getName() + " is dead.\n";

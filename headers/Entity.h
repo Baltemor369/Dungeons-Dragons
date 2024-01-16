@@ -22,10 +22,8 @@ private:
 public:
     Entity(std::string name); // default constructor 
     Entity(std::string name, int x, int y); // specific location
-    Entity(std::string name, std::string weaponName, int weaponDamage, int weaponPenetration); // specific weapon
-    Entity(std::string name, int armorDef, std::string armorName); // specific armor
-    Entity(std::string name, std::string weaponName, int weaponDamage, int weaponPenetration, std::string armorName, int armorDef); // sepcific armor and weapon
-    Entity(std::string name, int x, int y, std::string weaponName, int weaponDamage, int weaponPenetration, std::string armorName, int armorDef); // sepcific all
+    Entity(std::string name, std::string weaponName, int weaponDamage, int weaponPenetration, int weaponVampirism, std::string armorName, int armorDef, int armorThorn, int armorRegeneration); // sepcific armor and weapon
+    Entity(std::string name, int x, int y, std::string weaponName, int weaponDamage, int weaponPenetration, int weaponVampirism, std::string armorName, int armorDef, int armorThorn, int armorRegeneration); // sepcific all
     ~Entity();
 
     std::string recap()const;
@@ -66,5 +64,5 @@ public:
     // attack
     bool isAlive()const{return (hp_>0);} // return true if entity is alive else not
     std::string attack(Entity& target); // attack the target by giving our weapon's damage
-    void dealDamage(Weapon* weap); // calculate the damage receive with reduce by protection
+    void dealDamage(int damage); // calculate the damage receive with reduce by protection
 };

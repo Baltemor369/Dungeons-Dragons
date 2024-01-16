@@ -24,6 +24,7 @@ public:
 
     std::string getName()const{return name_;}
     int size()const{return items_.size();}
+    bool isEmpty()const{return items_.size() == 0;}
     int nbWeapons()const{return nbWeapon_;} // return numbers of Weapons
     int nbArmors()const{return nbArmor_;} // return numbers of Armors
     int nbObjects()const{return nbObject_;} // return numbers of Items

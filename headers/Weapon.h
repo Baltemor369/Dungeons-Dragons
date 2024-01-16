@@ -4,17 +4,23 @@
 
 class Weapon : public Object {
 private:
-    int damage_, penetringArmor_;
+    int damage_;
+    int lethality_; // => % of damage
+    int vampirism_; // => % of damage
 
 public:
-    Weapon(std::string name=Const::DEFAULT_WEAPON_NAME, int damage = Const::DEFAULT_WEAPON_DAMAGE, int penetringArmor=Const::DEFAULT_WEAPON_PENETRING): Object(name, Const::WEAPON), damage_(damage), penetringArmor_(penetringArmor){}
+    Weapon(std::string name, int damage , int lethality, int vampirism):
+        Object(name, Const::WEAPON), damage_(damage), lethality_(lethality), vampirism_(vampirism){}
     Weapon(const Weapon& weapon);
     ~Weapon();
 
     std::string info() const override;
     
     int getDamage() const{return damage_;}
-    int gePenetringArmor() const{return penetringArmor_;}
+    int getLethality() const{return lethality_;}
+    int getVampirism() const{return vampirism_;}
 
-    void setDamage(int damage);
+    void setDamage(int value){damage_ = value;}
+    void setLethality(int value){lethality_ = value;}
+    void setVampirism(int value){vampirism_ = value;}
 };

@@ -15,7 +15,6 @@ private:
     bool canFight_;
     bool canLoot_;
     bool canInventory;
-    int turn_;
     int nbEntities_, nbObjects_;
     Random rd_;
     std::string playerChoice_;
@@ -25,7 +24,11 @@ public:
     Game(std::string playerName);
     ~Game();
 
+    void loop();
     std::string input();
     int inputInt(int defaultValue);
-    void loop();
+    void handleCreateWeapon(Tile* currentTile);
+    void handleCreateArmor(Tile* currentTile);
+    void handleCreateObject(Tile* currentTile);
+    void handleCreateEntity(Tile* currentTile);
 };

@@ -11,11 +11,16 @@ namespace Const  {
     const std::string WEAPON = "weapon";
     const std::string ARMOR = "armor";
     const std::string OBJECT = "object";
+
     const std::string DEFAULT_WEAPON_NAME = "Hands";
     const int DEFAULT_WEAPON_DAMAGE = 1;
     const int DEFAULT_WEAPON_PENETRING = 0;
+    const int DEFAULT_WEAPON_VAMPIRISM = 0;
+    
     const std::string DEFAULT_ARMOR_NAME = "Clothes";
     const int DEFAULT_ARMOR_DEFENSE = 0;
+    const int DEFAULT_ARMOR_THORN = 0;
+    const int DEFAULT_ARMOR_REGENERATION = 0;
 }
 
 namespace Key {
@@ -43,12 +48,12 @@ namespace Key {
 
 namespace Items {
     namespace Ores {
-        std::string TERRALITE = "terralite ore";
-        std::string IRON = "iron ore";
-        std::string STEEL = "steel ore";
-        std::string GOLD = "gold ore";
-        std::string METEORITE = "meteorite ore";
-        std::string ORIX = "orix ore";
+        // std::string TERRALITE = "terralite ore";
+        // std::string IRON = "iron ore";
+        // std::string STEEL = "steel ore";
+        // std::string GOLD = "gold ore";
+        // std::string METEORITE = "meteorite ore";
+        // std::string ORIX = "orix ore";
     }
     
     // UNIX : gem parfaite multicolor, craft : 1 each gems
