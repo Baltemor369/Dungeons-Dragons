@@ -9,6 +9,8 @@ private:
     int vampirism_; // => % of damage
 
 public:
+    Weapon():
+        Object(Const::DEFAULT_WEAPON_NAME, Const::WEAPON), damage_(Const::DEFAULT_WEAPON_DAMAGE), lethality_(Const::DEFAULT_WEAPON_LETHALITY), vampirism_(Const::DEFAULT_WEAPON_VAMPIRISM){}
     Weapon(std::string name, int damage , int lethality, int vampirism):
         Object(name, Const::WEAPON), damage_(damage), lethality_(lethality), vampirism_(vampirism){}
     Weapon(const Weapon& weapon);

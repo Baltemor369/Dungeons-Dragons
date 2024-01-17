@@ -53,11 +53,13 @@ public:
     Weapon* getWeapon(){ return equipedWeapon_ ; } // return the object Weapon
     void equipWeapon(Weapon* w); // change the weapon's address saved with the new one
     void unequipWeapon(); // delete the weapon's address saved
+    bool hasWeaponEquipped()const{return equipedWeapon_->getName() != Const::DEFAULT_WEAPON_NAME;}
     
     // armor
     Armor* getArmor(){ return equipedArmor_ ; } // return the object Armor
     void equipArmor(Armor* a); // change the armor's address saved with the new one
     void unequipArmor(); // delete the armor's address saved
+    bool hasArmorEquipped()const{return equipedArmor_->getName() != Const::DEFAULT_ARMOR_NAME;}
 
     // attack
     bool isAlive()const{return (hp_>0);} // return true if entity is alive else not

@@ -3,15 +3,15 @@
 Entity::Entity(std::string name):name_(name), hp_(100), velocity_(1), location_(0,0)
 {
     inventory_ = new Inventory("Backpack");
-    equipedWeapon_ = new Weapon(Const::DEFAULT_WEAPON_NAME, Const::DEFAULT_WEAPON_DAMAGE, Const::DEFAULT_WEAPON_PENETRING, Const::DEFAULT_WEAPON_VAMPIRISM);
-    equipedArmor_ = new Armor(Const::DEFAULT_ARMOR_NAME, Const::DEFAULT_ARMOR_DEFENSE, Const::DEFAULT_ARMOR_THORN, Const::DEFAULT_ARMOR_REGENERATION);
+    equipedWeapon_ = new Weapon();
+    equipedArmor_ = new Armor();
 }
 
 Entity::Entity(std::string name, int x, int y):name_(name), hp_(100), velocity_(1), location_(x,y)
 {
     inventory_ = new Inventory("Backpack");
-    equipedWeapon_ = new Weapon(Const::DEFAULT_WEAPON_NAME, Const::DEFAULT_WEAPON_DAMAGE, Const::DEFAULT_WEAPON_PENETRING, Const::DEFAULT_WEAPON_VAMPIRISM);
-    equipedArmor_ = new Armor(Const::DEFAULT_ARMOR_NAME, Const::DEFAULT_ARMOR_DEFENSE, Const::DEFAULT_ARMOR_THORN, Const::DEFAULT_ARMOR_REGENERATION);
+    equipedWeapon_ = new Weapon();
+    equipedArmor_ = new Armor();
 }
 
 Entity::Entity(std::string name, std::string weaponName, int weaponDamage, int weaponPenetration, int weaponVampirism, std::string armorName, int armorDef, int armorThorn, int armorRegeneration):name_(name), hp_(100), velocity_(1), location_(0,0)
@@ -133,32 +133,32 @@ std::string Entity::fleeCharacter(const Entity& target) {
 
 void Entity::equipWeapon(Weapon* w){ 
     unequipWeapon();
-    if(w != nullptr){
+    if(w != nullptr && w->getName() != Const::WEAPON){
         equipedWeapon_ = w ;
     }
 }
 
 void Entity::equipArmor(Armor* a){ 
     unequipArmor();
-    if(a != nullptr){
+    if(a != nullptr && a->getName() != Const::ARMOR){
         equipedArmor_ = a ;
     } 
 }
 
 void Entity::unequipWeapon(){
-    if (equipedWeapon_->getName() != Const::DEFAULT_WEAPON_NAME)
+    if (hasWeaponEquipped())
     {
         inventory_->addItem(equipedWeapon_);
+        equipedWeapon_ = new Weapon(Const::DEFAULT_WEAPON_NAME, Const::DEFAULT_WEAPON_DAMAGE, Const::DEFAULT_WEAPON_LETHALITY, Const::DEFAULT_WEAPON_VAMPIRISM);
     }
-    equipedWeapon_ = nullptr;
 }
 
 void Entity::unequipArmor(){
-    if (equipedArmor_->getName() != Const::DEFAULT_ARMOR_NAME)
+    if (hasArmorEquipped())
     {
         inventory_->addItem(equipedArmor_);
+        equipedArmor_ = new Armor(Const::DEFAULT_ARMOR_NAME, Const::DEFAULT_ARMOR_DEFENSE, Const::DEFAULT_ARMOR_THORN, Const::DEFAULT_ARMOR_REGENERATION);
     }
-    equipedArmor_ = nullptr;
 }
 
 void Entity::dealDamage(int damage){
@@ -173,12 +173,14 @@ std::string Entity::attack(Entity& target){
             int hp_mem(target.getHp());
             
             // true damage
-            int trueDamage = std::round(getWeapon()->getDamage()*getWeapon()->getLethality());
+            int trueDamage = std::round(getWeapon()->getDamage() * getWeapon()->getLethality());
+            std::cout << std::to_string(trueDamage) << std::endl;
             target.dealDamage(trueDamage);
             
             // normal damage
             int damage = getWeapon()->getDamage() - target.getArmor()->getDefense();
             damage = (damage < 0) ? 0 : damage;
+            std::cout << std::to_string(damage) << std::endl;
             target.dealDamage(damage);
 
             // Vampirism

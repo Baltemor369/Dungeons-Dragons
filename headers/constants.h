@@ -14,7 +14,7 @@ namespace Const  {
 
     const std::string DEFAULT_WEAPON_NAME = "Hands";
     const int DEFAULT_WEAPON_DAMAGE = 1;
-    const int DEFAULT_WEAPON_PENETRING = 0;
+    const int DEFAULT_WEAPON_LETHALITY = 0;
     const int DEFAULT_WEAPON_VAMPIRISM = 0;
     
     const std::string DEFAULT_ARMOR_NAME = "Clothes";
