@@ -45,64 +45,27 @@ namespace Key {
     }
 }
 
-
 namespace Items {
     namespace Ores {
-        // std::string TERRALITE = "terralite ore";
-        // std::string IRON = "iron ore";
-        // std::string STEEL = "steel ore";
-        // std::string GOLD = "gold ore";
-        // std::string METEORITE = "meteorite ore";
-        // std::string ORIX = "orix ore";
+        const std::string TERRALITE = "terralite ore";
+        const std::string IRON = "iron ore";
+        const std::string STEEL = "steel ore";
+        const std::string GOLD = "gold ore";
+        const std::string METEORITE = "meteorite ore";
+        const std::string ORIX = "orix ore";
     }
+    namespace Ingots {} 
+    namespace Gems {} 
+    namespace Fragments {} 
+    namespace Components {} 
+    namespace Weapons {} 
+    namespace Armors {} 
+    namespace Others {} 
+    
     
     // UNIX : gem parfaite multicolor, craft : 1 each gems
     // ORIX : minerais des ténèbres, lieux : deep
     // ORITIUM : cyan orb floating and lootable with mob around(some instant attack, other attack only when you get the orb) , biome ATLIS : paradis beach jungle floating in the sky
     // terralite : ore forest orange&marron
     // Hastelloy ?
-}
-
-namespace Craft {
-    const dict WOODEN_SWORD = {{"wooden sword", {"stick", "wood", "wood"}}};
-    const dict BONES_SWORD = {{"bones sword", {"stick", "bone", "bone"}}};
-    const dict STONE_SWORD = {{"stone sword", {"stick", "stone", "stone"}}};
-    const dict TERRALITE_SWORD = {{"terralite sword", {"stick", "terralite", "terralite"}}}; // brun orangé
-    const dict IRON_SWORD = {{"iron sword", {"stick", "iron ingot", "iron ingot"}}};
-    const dict GOLDEN_SWORD = {{"golden sword", {"stick", "golden ingot", "golden ingot"}}};
-    const dict DIAMOND_SWORD = {{"diamond sword", {"stick", "diamond gem", "diamond gem"}}};
-    const dict MANGALITE_SWORD = {{"mangalite sword", {"stick", "mangalite ingot", "mangalite ingot"}}};
-    const dict METEORITE_SWORD = {{"meteorite sword", {"stick", "meteorite ingot", "meteorite ingot"}}};
-    const dict ORIX_SWORD = {{"orix sword", {"stick", "orix ingot", "orix ingot", "orix ingot", "orix ingot"}}};
-    const dict UNIX_SWORD = {{"unix sword", {"stick", "unix gem", "unix gem", "unix gem", "unix gem"}}};
-
-    const dict WOODEN_AXE = {{"wooden axe", {"stick", "wood", "wood", "wood"}}};
-    const dict BONES_AXE = {{"bones axe", {"stick", "bone", "bone", "bone"}}};
-    const dict STONE_AXE = {{"stone axe", {"stick", "stone", "stone", "stone"}}};
-    const dict TERRALITE_AXE = {{"terralite axe", {"stick", "terralite", "terralite", "terralite"}}};
-    const dict IRON_AXE = {{"iron axe", {"stick", "iron ingot", "iron ingot", "iron ingot"}}};
-    const dict GOLDEN_AXE = {{"golden axe", {"stick", "golden ingot", "golden ingot", "golden ingot"}}};
-    const dict DIAMOND_AXE = {{"diamond axe", {"stick", "diamond gem", "diamond gem", "diamond gem"}}};
-    const dict MANGALITE_AXE = {{"mangalite axe", {"stick", "mangalite ingot", "mangalite ingot", "mangalite ingot"}}};
-    const dict METEORITE_AXE = {{"meteorite axe", {"stick", "meteorite ingot", "meteorite ingot", "meteorite ingot"}}};
-    const dict UNIX_AXE = {{"unix axe", {"stick", "unix ingot", "unix ingot", "unix ingot", "unix ingot"}}};  
-    const dict ORIX_AXE = {{"orix axe", {"stick", "orix ingot", "orix ingot", "orix ingot", "orix ingot"}}}; 
-
-    const dict WOODEN_HAMMER = {{"wooden hammer", {"stick", "wood", "wood", "wood", "wood"}}};
-    const dict BONES_HAMMER = {{"bones hammer", {"stick", "bone", "bone", "bone", "bone"}}};
-    const dict TERRALITE_HAMMER = {{"terralite hammer", {"stick", "terralite", "terralite", "terralite", "terralite"}}};
-    const dict STONE_HAMMER = {{"stone hammer", {"stick", "stone", "stone", "stone", "stone"}}};
-    const dict IRON_HAMMER = {{"iron hammer", {"stick", "iron ingot", "iron ingot", "iron ingot", "iron ingot"}}};
-    const dict GOLDEN_HAMMER = {{"golden hammer", {"stick", "golden ingot", "golden ingot", "golden ingot", "golden ingot"}}};
-    const dict DIAMOND_HAMMER = {{"diamond hammer", {"stick", "diamond gem", "diamond gem", "diamond gem", "diamond gem"}}};
-    const dict MANGALITE_HAMMER = {{"mangalite hammer", {"stick", "mangalite ingot", "mangalite ingot", "mangalite ingot", "mangalite ingot"}}};
-    const dict METEORITE_HAMMER = {{"meteorite hammer", {"stick", "meteorite ingot", "meteorite ingot", "meteorite ingot", "meteorite ingot"}}};
-    
-    const dict WOODEN_SPEAR = {{"wooden spear", {"stick", "rope", "stick"}}};
-    const dict STONE_SPEAR = {{"wooden spear", {"stick", "rope", "stick", "rope", "flint"}}};
-    const dict IRON_SPEAR = {{"iron spear", {"iron ingot", "rope", "iron ingot", "rope", "iron ingot"}}};
-    const dict GOLD_SPEAR = {{"gold spear", {"gold ingot", "rope", "gold ingot", "rope", "gold ingot"}}};
-    const dict DIAMOND_SPEAR = {{"diamond spear", {"iron ingot", "rope", "iron ingot", "rope", "diamond gem"}}};
-    const dict MANGALITE_SPEAR = {{"meteorite spear", {"iron ingot", "rope", "iron ingot", "rope", "meteorite ingot"}}};
-    const dict METEORITE_SPEAR = {{"meteorite spear", {"iron ingot", "rope", "iron ingot", "rope", "meteorite ingot"}}};
 }

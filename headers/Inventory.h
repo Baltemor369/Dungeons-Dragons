@@ -1,10 +1,7 @@
 #pragma once
 
-#include <vector>
-#include <string>
 #include <algorithm>
 
-#include "Object.h"
 #include "Weapon.h"
 #include "Armor.h"
 

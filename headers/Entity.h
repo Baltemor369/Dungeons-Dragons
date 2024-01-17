@@ -2,11 +2,9 @@
 
 #include "Coord.h"
 #include "Inventory.h"
-#include "Weapon.h"
 #include "strFct.h"
 #include "Random.h"
 
-#include <string>
 #include <cmath>
 #include <iostream>
 

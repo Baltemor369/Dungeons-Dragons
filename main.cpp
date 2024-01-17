@@ -14,10 +14,11 @@ TODO :
 - add Events
 
 NEXT MISSION :
-1 - refaire looting 
+1 - definir les Items du jeu
 2 - empêcher le doublon de nom -> list des noms existants ?
 3 - créer le crafting
 4 - créer les objet pour le jeu (minerais - composants)
+5 - définir les craft des Items du jeu
 */
 
 int main(int argc, char const *argv[])
