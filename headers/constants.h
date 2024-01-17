@@ -34,7 +34,6 @@ namespace Key {
         const std::vector<std::string> KEY_RIGHT = {"right", "d"};
     }
 
-
     // QWERTY keyboard
     namespace EN {
         const std::vector<std::string> KEYS = {"up", "down", "left", "right","w","a","s","d"};
@@ -47,17 +46,40 @@ namespace Key {
 
 namespace Items {
     namespace Ores {
-        const std::string TERRALITE = "terralite ore";
-        const std::string IRON = "iron ore";
-        const std::string STEEL = "steel ore";
-        const std::string GOLD = "gold ore";
-        const std::string METEORITE = "meteorite ore";
-        const std::string ORIX = "orix ore";
+        const std::string TERRALITE = "Terralite ore";
+        const std::string IRON = "Iron ore";
+        const std::string STEEL = "Steel ore";
+        const std::string GOLD = "Gold ore";
+        const std::string METEORITE = "Meteorite ore";
+        const std::string ORIX = "Orix ore";
     }
-    namespace Ingots {} 
-    namespace Gems {} 
-    namespace Fragments {} 
-    namespace Components {} 
+    namespace Ingots {
+        const std::string TERRALITE = "Terralite ingot";
+        const std::string IRON = "Iron ingot";
+        const std::string STEEL = "Steel ingot";
+        const std::string GOLD = "Gold ingot";
+        const std::string METEORITE = "Meteorite ingot";
+        const std::string ORIX = "Orix ingot";
+    } 
+    namespace Gems {
+        const std::string DIAMOND = "Diamond gem";
+        const std::string SAPHIR = "Saphir gem";
+        const std::string EMERAULD = "Emerauld gem";
+        const std::string RUBY = "Ruby gem";
+        const std::string AMETHYST = "Amethyst gem";
+        const std::string AMBER = "Amber gem";
+        const std::string UNIX = "Unix gem";
+    }
+    namespace Fragments {
+        const std::string BONE = "Bone";
+        const std::string ORITIUM = "Oritium orb";
+    } 
+    namespace Components {
+        const std::string STICK = "Stick";
+        const std::string IRON_BAR = "Iron bar";
+        const std::string WOOD = "Wood";
+        const std::string FLINT = "Flint";
+    } 
     namespace Weapons {} 
     namespace Armors {} 
     namespace Others {} 
