@@ -8,7 +8,7 @@ private:
 
 public:
     Armor():
-        Object(Const::DEFAULT_ARMOR_NAME, Const::ARMOR), defense_(Const::DEFAULT_ARMOR_DEFENSE), thorns_(Const::DEFAULT_ARMOR_THORN), regeneration_(Const::DEFAULT_ARMOR_REGENERATION) {}
+        Object(Const::Default::ARMOR_NAME, Const::ARMOR), defense_(Const::Default::ARMOR_DEFENSE), thorns_(Const::Default::ARMOR_THORN), regeneration_(Const::Default::ARMOR_REGENERATION) {}
     Armor(std::string name, int defense, int thorns, int regenerate):
         Object(name, Const::ARMOR), defense_(defense), thorns_(thorns), regeneration_(regenerate) {}
     Armor(const Armor& other);

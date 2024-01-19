@@ -6,25 +6,26 @@
 
 using dict = std::map<std::string, std::vector<std::string>>;
 namespace Const  {
-    const std::string ENEMY = "enemy";
-    const std::string PLAYER = "player";
-    const std::string WEAPON = "weapon";
-    const std::string ARMOR = "armor";
-    const std::string OBJECT = "object";
-
-    const std::string DEFAULT_WEAPON_NAME = "Hands";
-    const int DEFAULT_WEAPON_DAMAGE = 1;
-    const int DEFAULT_WEAPON_LETHALITY = 0;
-    const int DEFAULT_WEAPON_VAMPIRISM = 0;
-    
-    const std::string DEFAULT_ARMOR_NAME = "Clothes";
-    const int DEFAULT_ARMOR_DEFENSE = 0;
-    const int DEFAULT_ARMOR_THORN = 0;
-    const int DEFAULT_ARMOR_REGENERATION = 0;
+    const std::string ENEMY = "Enemy";
+    const std::string PLAYER = "Player";
+    const std::string WEAPON = "Weapon";
+    const std::string ARMOR = "Armor";
+    const std::string OBJECT = "Object";
+    namespace Default {
+        std::vector<std::string> list = {"Ores", "Ingots", "Gems", "Fragments", "Components", "Weapon", "Armor", "Other"};
+        const std::string WEAPON_NAME = "Hands";
+        const int WEAPON_DAMAGE = 1;
+        const int WEAPON_LETHALITY = 0;
+        const int WEAPON_VAMPIRISM = 0;
+        
+        const std::string ARMOR_NAME = "Clothes";
+        const int ARMOR_DEFENSE = 0;
+        const int ARMOR_THORN = 0;
+        const int ARMOR_REGENERATION = 0;
+    }
 }
 
 namespace Key {
-    
     // AZERTY keyboard
     namespace FR {
         const std::vector<std::string> KEYS = {"up", "down", "left", "right","z","q","s","d"};
@@ -46,6 +47,7 @@ namespace Key {
 
 namespace Items {
     namespace Ores {
+        const std::string COPPER = "Copper ore";
         const std::string TERRALITE = "Terralite ore";
         const std::string IRON = "Iron ore";
         const std::string STEEL = "Steel ore";
@@ -54,6 +56,7 @@ namespace Items {
         const std::string ORIX = "Orix ore";
     }
     namespace Ingots {
+        const std::string COPPER = "Copper ingot";
         const std::string TERRALITE = "Terralite ingot";
         const std::string IRON = "Iron ingot";
         const std::string STEEL = "Steel ingot";
@@ -79,6 +82,8 @@ namespace Items {
         const std::string IRON_BAR = "Iron bar";
         const std::string WOOD = "Wood";
         const std::string FLINT = "Flint";
+        const std::string ROPE = "rope";
+
     } 
     namespace Weapons {} 
     namespace Armors {} 

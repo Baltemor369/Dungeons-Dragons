@@ -16,6 +16,7 @@ private:
     bool canLoot_;
     bool canInventory;
     int nbEntities_, nbObjects_;
+    std::vector<std::string> entityNames_, itemNames_;
     Random rd_;
     std::string playerChoice_;
     Entity player_;

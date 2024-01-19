@@ -6,6 +6,9 @@ Game::Game(std::string playerName):player_(playerName), running_(true), canFight
     map_.addTile(t);
     map_.setCurrentTile(t);
     map_.getCurrentTile()->getGroup()->addPlayer(player_);
+    itemNames_.push_back(Const::Default::ARMOR_NAME);
+    itemNames_.push_back(Const::Default::WEAPON_NAME);
+    entityNames_.push_back(playerName);
 }
 
 Game::~Game()
@@ -215,11 +218,11 @@ void Game::loop(){
                     if (!target->isAlive())
                     {
                         
-                        if (target->getWeapon()->getName() != Const::DEFAULT_WEAPON_NAME)
+                        if (target->getWeapon()->getName() != Const::Default::WEAPON_NAME)
                         {
                             currentTile->getStorage()->addItem(target->getWeapon());
                         }
-                        if (target->getArmor()->getName() != Const::DEFAULT_ARMOR_NAME)
+                        if (target->getArmor()->getName() != Const::Default::ARMOR_NAME)
                         {
                             currentTile->getStorage()->addItem(target->getArmor());
                         }
@@ -337,21 +340,23 @@ void Game::handleCreateWeapon(Tile* currentTile){
     std::string weaponName = input();
 
     // don't create a new weapon if default weapon
-    if (weaponName != Const::DEFAULT_WEAPON_NAME && weaponName.size() > 1)
+    if (!isIn(weaponName, itemNames_) && weaponName.size() > 1)
     {
         std::cout << "Enter damage value :\n";
-        int damage = inputInt(Const::DEFAULT_WEAPON_DAMAGE);
+        int damage = inputInt(Const::Default::WEAPON_DAMAGE);
 
         std::cout << "Enter penetration value :\n";
-        int penetration = inputInt(Const::DEFAULT_WEAPON_LETHALITY);
+        int penetration = inputInt(Const::Default::WEAPON_LETHALITY);
         
         std::cout << "Enter vampirism value :\n";
-        int vampirism = inputInt(Const::DEFAULT_WEAPON_VAMPIRISM);
+        int vampirism = inputInt(Const::Default::WEAPON_VAMPIRISM);
         
         std::cout << "Weapon created \n";
         currentTile->getStorage()->addItem(new Weapon(weaponName, damage, penetration, vampirism));
         ++nbObjects_;
         std::cout << currentTile->info();
+
+        itemNames_.push_back(weaponName);
     }
     playerChoice_ = "c";
 }
@@ -362,25 +367,27 @@ void Game::handleCreateArmor(Tile* currentTile){
 
     if (armornName.size() < 2)
     {
-        armornName = Const::DEFAULT_ARMOR_NAME;
+        armornName = Const::Default::ARMOR_NAME;
     }
 
     // don't create a new armor if default name
-    if (armornName != Const::DEFAULT_ARMOR_NAME && armornName.size() > 1)
+    if (!isIn(armornName, itemNames_) && armornName.size() > 1)
     {
         std::cout << "Enter protection value :\n";
-        int defense = inputInt(Const::DEFAULT_ARMOR_DEFENSE);
+        int defense = inputInt(Const::Default::ARMOR_DEFENSE);
         
         std::cout << "Enter Thorns value :\n";
-        int thorns = inputInt(Const::DEFAULT_ARMOR_THORN);
+        int thorns = inputInt(Const::Default::ARMOR_THORN);
         
         std::cout << "Enter Regeneration value :\n";
-        int regeneration = inputInt(Const::DEFAULT_ARMOR_REGENERATION);
+        int regeneration = inputInt(Const::Default::ARMOR_REGENERATION);
         
         std::cout << "Armor created \n";
         currentTile->getStorage()->addItem(new Armor(armornName, defense, thorns, regeneration));
         ++nbObjects_;
         std::cout << currentTile->info();
+
+        itemNames_.push_back(armornName);
     }
     playerChoice_ = "c";
 }
@@ -389,24 +396,25 @@ void Game::handleCreateObject(Tile* currentTile){
     std::cout << "Enter name :\n";
     std::string name = input();
 
-    if (!isIn(lower(name), {Const::DEFAULT_ARMOR_NAME, Const::DEFAULT_WEAPON_NAME}) && name.size() > 1)
+    if (!isIn(name, itemNames_) && name.size() > 1)
     {
         std::cout << "Object created \n";
         currentTile->getStorage()->addItem(new Object(name));
         ++nbObjects_;
         std::cout << currentTile->info();
+
+        itemNames_.push_back(name);
     }
     
     playerChoice_ = "c";
 }
 
 void Game::handleCreateEntity(Tile* currentTile){
+    std::string entityName;
     std::cout << "Enter the name :\n";
-    std::string entityName = input();
-
-    if (isIn(entityName, {Const::DEFAULT_ARMOR_NAME, Const::DEFAULT_WEAPON_NAME}) || entityName.size() < 2)
+    while (isIn(entityName, entityNames_) || entityName.size() < 2)
     {
-        entityName = "enemy";
+        entityName = input();
     }
 
     // pre create variables 
@@ -432,5 +440,6 @@ void Game::handleCreateEntity(Tile* currentTile){
     
     currentTile->getGroup()->addEnemy(new Entity(entityName, weaponName, damage, penetration, vampirism, armorName, defense, thorns, regeneration));
     ++nbEntities_;
+    entityNames_.push_back(entityName);
     std::cout << currentTile->info();
 }

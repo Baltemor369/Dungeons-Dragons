@@ -53,7 +53,6 @@ void Entity::setName(const std::string name){
     {
         name_ = name;
     }
-    
 }
 
 std::string Entity::move(std::string direction) {
@@ -149,7 +148,7 @@ void Entity::unequipWeapon(){
     if (hasWeaponEquipped())
     {
         inventory_->addItem(equipedWeapon_);
-        equipedWeapon_ = new Weapon(Const::DEFAULT_WEAPON_NAME, Const::DEFAULT_WEAPON_DAMAGE, Const::DEFAULT_WEAPON_LETHALITY, Const::DEFAULT_WEAPON_VAMPIRISM);
+        equipedWeapon_ = new Weapon(Const::Default::WEAPON_NAME, Const::Default::WEAPON_DAMAGE, Const::Default::WEAPON_LETHALITY, Const::Default::WEAPON_VAMPIRISM);
     }
 }
 
@@ -157,7 +156,7 @@ void Entity::unequipArmor(){
     if (hasArmorEquipped())
     {
         inventory_->addItem(equipedArmor_);
-        equipedArmor_ = new Armor(Const::DEFAULT_ARMOR_NAME, Const::DEFAULT_ARMOR_DEFENSE, Const::DEFAULT_ARMOR_THORN, Const::DEFAULT_ARMOR_REGENERATION);
+        equipedArmor_ = new Armor(Const::Default::ARMOR_NAME, Const::Default::ARMOR_DEFENSE, Const::Default::ARMOR_THORN, Const::Default::ARMOR_REGENERATION);
     }
 }
 

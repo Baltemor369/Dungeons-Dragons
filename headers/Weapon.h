@@ -10,7 +10,7 @@ private:
 
 public:
     Weapon():
-        Object(Const::DEFAULT_WEAPON_NAME, Const::WEAPON), damage_(Const::DEFAULT_WEAPON_DAMAGE), lethality_(Const::DEFAULT_WEAPON_LETHALITY), vampirism_(Const::DEFAULT_WEAPON_VAMPIRISM){}
+        Object(Const::Default::WEAPON_NAME, Const::WEAPON), damage_(Const::Default::WEAPON_DAMAGE), lethality_(Const::Default::WEAPON_LETHALITY), vampirism_(Const::Default::WEAPON_VAMPIRISM){}
     Weapon(std::string name, int damage , int lethality, int vampirism):
         Object(name, Const::WEAPON), damage_(damage), lethality_(lethality), vampirism_(vampirism){}
     Weapon(const Weapon& weapon);
