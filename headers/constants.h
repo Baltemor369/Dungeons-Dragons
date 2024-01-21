@@ -11,8 +11,11 @@ namespace Const  {
     const std::string WEAPON = "Weapon";
     const std::string ARMOR = "Armor";
     const std::string OBJECT = "Object";
+    namespace Reserved {
+        const std::vector<std::string> NAMES = {"Chest","Barrel","Box","Wardrobe", "Bag", "Crate", "Locker"};
+    }
+        
     namespace Default {
-        std::vector<std::string> list = {"Ores", "Ingots", "Gems", "Fragments", "Components", "Weapon", "Armor", "Other"};
         const std::string WEAPON_NAME = "Hands";
         const int WEAPON_DAMAGE = 1;
         const int WEAPON_LETHALITY = 0;

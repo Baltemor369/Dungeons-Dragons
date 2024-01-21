@@ -28,8 +28,8 @@ public:
     void loop();
     std::string input();
     int inputInt(int defaultValue);
-    void handleCreateWeapon(Tile* currentTile);
-    void handleCreateArmor(Tile* currentTile);
-    void handleCreateObject(Tile* currentTile);
-    void handleCreateEntity(Tile* currentTile);
+    void handleCreateWeapon(Inventory* invent);
+    void handleCreateArmor(Inventory* invent);
+    void handleCreateObject(Inventory* invent);
+    void handleCreateEntity(Group* team);
 };

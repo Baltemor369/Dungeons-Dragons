@@ -15,7 +15,6 @@ TODO :
 
 NEXT MISSION :
 1 - definir les Items du jeu
-2 - empêcher le doublon de nom -> list des noms existants ?
 3 - créer le crafting
 5 - définir les craft des Items du jeu
 */

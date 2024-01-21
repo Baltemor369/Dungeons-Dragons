@@ -285,21 +285,21 @@ void Game::loop(){
             if (isIn(lower(createChoice),{"w","weapon"}))
             {
                 
-                handleCreateWeapon(currentTile);
+                handleCreateWeapon(currentTile->getStorage());
                 
             }else if (isIn(lower(createChoice),{"a","armor"}))
             {
                 
-                handleCreateArmor(currentTile);
+                handleCreateArmor(currentTile->getStorage());
                 
             }else if (isIn(lower(createChoice),{"o","object"}))
             {
                 
-                handleCreateObject(currentTile);
+                handleCreateObject(currentTile->getStorage());
 
             }else if (isIn(lower(createChoice),{"e","enemy"}))
             {
-                handleCreateEntity(currentTile);
+                handleCreateEntity(currentTile->getGroup());
             }else{
                 playerChoice_ = "";
             }
@@ -335,111 +335,163 @@ int Game::inputInt(int defaultValue){
     return buffInt;
 }
 
-void Game::handleCreateWeapon(Tile* currentTile){
-    std::cout << "Enter name :\n";
-    std::string weaponName = input();
-
-    // don't create a new weapon if default weapon
-    if (!isIn(weaponName, itemNames_) && weaponName.size() > 1)
+void Game::handleCreateWeapon(Inventory* invent){
+    std::string weaponName;
+    do
     {
-        std::cout << "Enter damage value :\n";
-        int damage = inputInt(Const::Default::WEAPON_DAMAGE);
+        std::cout << "Enter name : ";
+        weaponName = input();
+    } while (!isIn(weaponName, itemNames_) && weaponName.size() > 1);
 
-        std::cout << "Enter penetration value :\n";
-        int penetration = inputInt(Const::Default::WEAPON_LETHALITY);
-        
-        std::cout << "Enter vampirism value :\n";
-        int vampirism = inputInt(Const::Default::WEAPON_VAMPIRISM);
-        
-        std::cout << "Weapon created \n";
-        currentTile->getStorage()->addItem(new Weapon(weaponName, damage, penetration, vampirism));
-        ++nbObjects_;
-        std::cout << currentTile->info();
-
-        itemNames_.push_back(weaponName);
-    }
-    playerChoice_ = "c";
-}
-
-void Game::handleCreateArmor(Tile* currentTile){
-    std::cout << "Enter name :\n";
-    std::string armornName = input();
-
-    if (armornName.size() < 2)
+    int damage;
+    do
     {
-        armornName = Const::Default::ARMOR_NAME;
-    }
-
-    // don't create a new armor if default name
-    if (!isIn(armornName, itemNames_) && armornName.size() > 1)
+        std::cout << "Enter damage value(>0) : ";
+        damage = inputInt(Const::Default::WEAPON_DAMAGE);
+    } while (damage < 1);
+    
+    
+    int penetration;
+    do
     {
-        std::cout << "Enter protection value :\n";
-        int defense = inputInt(Const::Default::ARMOR_DEFENSE);
+        std::cout << "Enter penetration value(0-damage) : ";
+        penetration = inputInt(Const::Default::WEAPON_LETHALITY);
+    } while (penetration > damage && penetration < 0);
+    
         
-        std::cout << "Enter Thorns value :\n";
-        int thorns = inputInt(Const::Default::ARMOR_THORN);
-        
-        std::cout << "Enter Regeneration value :\n";
-        int regeneration = inputInt(Const::Default::ARMOR_REGENERATION);
-        
-        std::cout << "Armor created \n";
-        currentTile->getStorage()->addItem(new Armor(armornName, defense, thorns, regeneration));
-        ++nbObjects_;
-        std::cout << currentTile->info();
-
-        itemNames_.push_back(armornName);
-    }
-    playerChoice_ = "c";
-}
-
-void Game::handleCreateObject(Tile* currentTile){
-    std::cout << "Enter name :\n";
-    std::string name = input();
-
-    if (!isIn(name, itemNames_) && name.size() > 1)
+    
+    int vampirism;
+    do
     {
-        std::cout << "Object created \n";
-        currentTile->getStorage()->addItem(new Object(name));
-        ++nbObjects_;
-        std::cout << currentTile->info();
+        std::cout << "Enter vampirism value(0-100) : ";
+        vampirism = inputInt(Const::Default::WEAPON_VAMPIRISM);
+    } while (vampirism < 0 && vampirism > 100);
 
-        itemNames_.push_back(name);
-    }
+    std::cout << "Weapon created \n";
+    invent->addItem(new Weapon(weaponName, damage, penetration, vampirism));
+    ++nbObjects_;
+
+    itemNames_.push_back(weaponName);
     
     playerChoice_ = "c";
 }
 
-void Game::handleCreateEntity(Tile* currentTile){
-    std::string entityName;
-    std::cout << "Enter the name :\n";
-    while (isIn(entityName, entityNames_) || entityName.size() < 2)
+void Game::handleCreateArmor(Inventory* invent){
+    std::string armorName;
+    do
     {
-        entityName = input();
-    }
+        std::cout << "Enter name : ";
+        armorName = input();
+    } while (!isIn(armorName, itemNames_) && armorName.size() > 1);
 
-    // pre create variables 
+    int defense;
+    do
+    {
+        std::cout << "Enter defense value(>0) : ";
+        defense = inputInt(Const::Default::ARMOR_DEFENSE);
+    } while (defense < 1);
+    
+    
+    int thorns;
+    do
+    {
+        std::cout << "Enter thorns value(0-100) : ";
+        thorns = inputInt(Const::Default::WEAPON_LETHALITY);
+    } while (thorns > 100 && thorns < 0);
+    
+        
+    
+    int regeneration;
+    do
+    {
+        std::cout << "Enter regeneration value(0-100) : ";
+        regeneration = inputInt(Const::Default::ARMOR_REGENERATION);
+    } while (regeneration < 0 && regeneration > 100);
+
+    std::cout << "Armor created \n";
+    invent->addItem(new Armor(armorName, defense, thorns, regeneration));
+    ++nbObjects_;
+
+    itemNames_.push_back(armorName);
+    
+    playerChoice_ = "c";
+}
+
+void Game::handleCreateObject(Inventory* invent){
+    std::string name;
+    do
+    {
+        std::cout << "Enter name : ";
+        name = input();
+    } while (name.size() > 2 && !isIn(name, Const::Reserved::NAMES));
+
+    std::cout << "Object created \n";
+    invent->addItem(new Object(name));
+    ++nbObjects_;
+
+    itemNames_.push_back(name);
+    
+    playerChoice_ = "c";
+}
+
+void Game::handleCreateEntity(Group* team){
+    std::string entityName;
+    do
+    {
+        std::cout << "Enter the name : ";
+        entityName = input();
+    } while (entityName.size() > 2 && !isIn(entityName, Const::Reserved::NAMES));
+    
+
+    Entity* newEntity = new Entity(entityName, map_.getCurrentTile()->getX(), map_.getCurrentTile()->getY());
+
     std::string weaponName, armorName;
     int damage, penetration, vampirism;
     int defense, thorns, regeneration;
     
-    std::cout << "Add a weapon (y/n) ?";
+    std::cout << "Add a weapon to the inventory (y/n) ?";
     std::string weaponChoice = input();
 
-    if (isIn(lower(weaponChoice), {"y","yes"}))
+    if (isIn(lower(weaponChoice),{"y","yes"}))
     {
-        handleCreateWeapon(currentTile);
+        do
+        {
+            handleCreateWeapon(newEntity->getInventory());
+
+            std::cout << "equip this weapon ?(y/n)";
+            if (isIn(lower(input()),{"y","yes"}))
+            {
+                newEntity->equipWeapon(new Weapon(weaponName, damage, penetration, vampirism));
+            }else{
+                newEntity->getInventory()->addItem(new Weapon(weaponName, damage, penetration, vampirism));
+            }
+
+            std::cout << "Create another weapon ?(y/n)";
+            weaponChoice = input();
+        } while (isIn(lower(weaponChoice),{"y","yes"}));
     }
 
-    std::cout << "Add an armor (y/n) ?";
+    std::cout << "Add a armor to the inventory (y/n) ?";
     std::string armorChoice = input();
+    if (isIn(lower(armorChoice),{"y","yes"})){
+        do
+        {
+            handleCreateArmor(newEntity->getInventory());
 
-    if (isIn(lower(armorChoice), {"y","yes"}))
-    {
-        handleCreateArmor(currentTile);
+            std::cout << "equip this armor ?(y/n)";
+            if (isIn(lower(input()),{"y","yes"}))
+            {
+                newEntity->equipArmor(new Armor(armorName, defense, thorns, regeneration));
+            }else{
+                newEntity->getInventory()->addItem(new Armor(armorName, defense, thorns, regeneration));
+            }
+            
+            std::cout << "Create another armor ?(y/n)";
+            armorChoice = input();
+        } while (isIn(lower(armorChoice), {"y","yes"}));
     }
-    
-    currentTile->getGroup()->addEnemy(new Entity(entityName, weaponName, damage, penetration, vampirism, armorName, defense, thorns, regeneration));
+
+    team->addEnemy(newEntity);
     ++nbEntities_;
     entityNames_.push_back(entityName);
-    std::cout << currentTile->info();
 }
