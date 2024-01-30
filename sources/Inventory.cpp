@@ -30,7 +30,7 @@ std::string Inventory::info() const {
     }else{
         int i(0);
         for (const auto& item : items_) {
-            text += " - " + item->info();
+            text += "count : " + std::to_string(std::get<0>(item)) + " - " + std::get<1>(item)->info();
             ++i;
         }
     }
@@ -38,8 +38,37 @@ std::string Inventory::info() const {
     return text;
 }
 
+Object* Inventory::getItemByName(std::string name){
+    for (auto item : items_) {
+        if (std::get<1>(item)->getName() == name) {
+            return std::get<1>(item);
+        }
+    }
+    return Const::ERROR::POINTER;
+}
+
+int Inventory::getIndexByName(std::string name) const {
+    for (int i = 0; i < items_.size(); i++)
+    {
+        if (std::get<1>(items_[1])->getName() == name)
+        {
+            return i;
+        }
+    }
+    return Const::ERROR::INT;
+}
+
 void Inventory::addItem(Object* item){
-    items_.push_back(item);
+    int it = getIndexByName(item->getName());
+
+    if (it == Const::ERROR::INT)
+    {
+        items_.push_back({1, item});
+    }else{
+        ++std::get<0>(items_[it]);
+    }
+    
+
     if (item->getType() == Const::WEAPON)
     {
         ++nbWeapon_;
@@ -52,25 +81,15 @@ void Inventory::addItem(Object* item){
 }
 
 void Inventory::removeItem(std::string name){
-    auto it = std::remove_if(items_.begin(), items_.end(),
-        [name](const Object* item) {
-            return item->getName() == name;
-        });
-
-    if (it != items_.end()) {
-        items_.erase(it, items_.end());
-    }
-}
-
-Object* Inventory::getItem(std::string name){
-    for (auto item : items_) {
-        if (item->getName() == name) {
-            return item;
+    int index = getIndexByName(name);
+    // verify if item name is registered
+    if (index != -1)
+    {
+        if (std::get<0>(items_[index]) > 1)
+        {
+            --std::get<0>(items_[index]);
+        }else{
+            items_.erase(items_.begin()+index);
         }
     }
-    return nullptr;
-}
-
-void Inventory::craft(){
-
 }

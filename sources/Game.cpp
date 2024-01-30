@@ -24,7 +24,7 @@ void Game::loop(){
         auto currentTile = map_.getCurrentTile();
         if (lower(playerChoice_) == "")
         {
-            text = "\nAction : Info - Move - Stuff";
+            text = "\nAction : Info - Move - Stuff - Crafting";
             if (!currentTile->isAlone())
             {
                 canFight_ = true;
@@ -99,12 +99,16 @@ void Game::loop(){
         // stuffing
         else if(isIn(lower(playerChoice_), {"s","stuff"})){
             Inventory* invent = player_.getInventory();
+
+            bool thereIsWeapon = (invent->nbWeapons() > 0) ? true : false;
+            bool thereIsArmor = (invent->nbArmors() > 0) ? true : false;
+            
             std::cout << player_.getWeapon()->info();
             std::cout << player_.getArmor()->info();
             std::cout << invent->info();
             
             std::string text("Action : ");
-            if (invent->nbWeapons() > 0 or invent->nbArmors() > 0)
+            if (invent->nbWeapons() > 0 || invent->nbArmors() > 0)
             {
                 text += " Equip";
             }
@@ -118,31 +122,31 @@ void Game::loop(){
 
             std::string stuffChoice = input();
 
-            if (isIn(lower(stuffChoice),{"e","equipp"}))
+            if (thereIsWeapon && isIn(lower(stuffChoice),{"e","equipp"}))
             {
 
                 std::cout << "What do you want to equip ?\nEnter the weapon/armor name.\n" << player_.getInventory()->info() << "=>";
                 std::string itemChoice = input();
 
-                auto item = player_.getInventory()->getItem(itemChoice);
+                auto item = player_.getInventory()->getItemByName(itemChoice);
                 
                 Weapon* w = dynamic_cast<Weapon*>(item);
                 if (w)
                 {
                     player_.equipWeapon(w);
-                    std::cout << "Item equipped\n";
+                    std::cout << "Weapon equipped\n";
                 }else{
                     Armor* a = dynamic_cast<Armor*>(item);
                     if (a)
                     {
                         player_.equipArmor(a);
-                        std::cout << "Item equipped\n";
+                        std::cout << "Armor equipped\n";
                     }else{
                         std::cout << "This item is not equipable\n";
                     }
                 }
             }
-            else if (isIn(lower(stuffChoice), {"u","unequipp"}))
+            else if (thereIsArmor && isIn(lower(stuffChoice), {"u","unequipp"}))
             {
                 std::string text = "Unequip : ";
                 if (player_.hasWeaponEquipped())
@@ -162,7 +166,8 @@ void Game::loop(){
 
                 std::cout << text;
                 std::string tmp = input();
-
+                
+                // unequip player stuff part
                 if (isIn(lower(tmp), {"w","weapon"}))
                 {
                     player_.unequipWeapon();
@@ -170,12 +175,20 @@ void Game::loop(){
                 else if (isIn(lower(tmp), {"a","armor"}))
                 {
                     player_.unequipArmor();
-                }                
+                }else{
+                    playerChoice_ = "s";
+                }
+            }else{
+                playerChoice_ = "";
             }
-            
-            playerChoice_ = "s";
+        }
+        // crafting
+        else if (isIn(lower(playerChoice_), {"crafting"}))
+        {
+            // faire une fonction qui balaye l'inventaire du joueur et verifie les crafts possibles
             
         }
+        
         // fighting
         else if (canFight_ && isIn(lower(playerChoice_), {"f","fight"}))
         {
@@ -228,7 +241,7 @@ void Game::loop(){
                         }
                         
                         for(auto item : target->getInventory()->getItems()){
-                            currentTile->getStorage()->addItem(item);
+                            currentTile->getStorage()->addItem(std::get<1>(item));
                         }
                         
                         currentTile->getGroup()->removeEnemy(target->getName());
@@ -256,7 +269,7 @@ void Game::loop(){
             std::cout << "=>";
             std::string lootChoice = input();
 
-            auto item = map_.getCurrentTile()->getStorage()->getItem(lootChoice);
+            auto item = map_.getCurrentTile()->getStorage()->getItemByName(lootChoice);
             
             if (item != nullptr)
             {
@@ -271,7 +284,7 @@ void Game::loop(){
             }
             
         }
-        else if (isIn(lower(playerChoice_),{"crafting"}))
+        else if (isIn(lower(playerChoice_),{"craft"}))
         {
             
         }
@@ -341,7 +354,7 @@ void Game::handleCreateWeapon(Inventory* invent){
     {
         std::cout << "Enter name : ";
         weaponName = input();
-    } while (!isIn(weaponName, itemNames_) && weaponName.size() > 1);
+    } while (weaponName.size() > 1);
 
     int damage;
     do
@@ -370,8 +383,6 @@ void Game::handleCreateWeapon(Inventory* invent){
     std::cout << "Weapon created \n";
     invent->addItem(new Weapon(weaponName, damage, penetration, vampirism));
     ++nbObjects_;
-
-    itemNames_.push_back(weaponName);
     
     playerChoice_ = "c";
 }
@@ -382,7 +393,7 @@ void Game::handleCreateArmor(Inventory* invent){
     {
         std::cout << "Enter name : ";
         armorName = input();
-    } while (!isIn(armorName, itemNames_) && armorName.size() > 1);
+    } while (armorName.size() > 1);
 
     int defense;
     do
@@ -423,7 +434,7 @@ void Game::handleCreateObject(Inventory* invent){
     {
         std::cout << "Enter name : ";
         name = input();
-    } while (name.size() > 2 && !isIn(name, Const::Reserved::NAMES));
+    } while (name.size() > 2);
 
     std::cout << "Object created \n";
     invent->addItem(new Object(name));
