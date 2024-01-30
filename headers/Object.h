@@ -1,6 +1,7 @@
 #pragma once
 
 #include "constants.h"
+
 class Object {
 private:
     std::string name_;

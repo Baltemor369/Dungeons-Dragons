@@ -1,12 +1,12 @@
 #pragma once
 
-#include <iostream>
-#include <vector>
+// #include <iostream>
+// #include <vector>
 
-#include "Entity.h"
-#include "Random.h"
 #include "Map.h"
-#include "strFct.h"
+// #include "Entity.h"
+// #include "Random.h"
+// #include "strFct.h"
 
 class Game
 {

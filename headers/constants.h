@@ -5,12 +5,18 @@
 #include <map>
 
 using dict = std::map<std::string, std::vector<std::string>>;
+
 namespace Const  {
     const std::string ENEMY = "Enemy";
     const std::string PLAYER = "Player";
     const std::string WEAPON = "Weapon";
     const std::string ARMOR = "Armor";
     const std::string OBJECT = "Object";
+    namespace ERROR {
+        const int INT = -1;
+        const std::string STR = "Error";
+        const auto POINTER = nullptr;
+    }
     namespace Reserved {
         const std::vector<std::string> NAMES = {"Chest","Barrel","Box","Wardrobe", "Bag", "Crate", "Locker"};
     }
