@@ -32,4 +32,5 @@ public:
     void handleCreateArmor(Inventory* invent);
     void handleCreateObject(Inventory* invent);
     void handleCreateEntity(Group* team);
+    std::string autocomplete(std::vector<std::string> words, std::string input);
 };

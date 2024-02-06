@@ -93,3 +93,19 @@ void Inventory::removeItem(std::string name){
         }
     }
 }
+
+bool Inventory::canCraft(Recipe recipe){
+    for (int index(0); index < recipe.size(); ++index)
+    {
+        if (getItemByName(std::get<1>(recipe[index])) != Const::ERROR::POINTER)
+        {
+            recipe.erase(recipe.begin()+index);
+        }
+    }
+    if (recipe.empty())
+    {
+        return true;
+    }    
+    
+    return false;
+}

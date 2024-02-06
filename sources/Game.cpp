@@ -46,11 +46,11 @@ void Game::loop(){
             playerChoice_ = input();
             playerChoice_ = lower(playerChoice_);
         }
-
-        // info
-        if (isIn(lower(playerChoice_), {"i", "info"}))
+        playerChoice_ = autocomplete({Action::ALL}, playerChoice_);
+        // informations
+        if (playerChoice_ == Action::Info::SELF)
         {
-            text = "\nInfo : Tile - Player - Inventory - equiped Weapon - equiped Armor - Back\n->";
+            text = "\nInfo : Tile - Player - Inventory - Weapon equiped - equiped Armor - Back\n->";
             std::cout << text;
             std::string infoChoice = input();
             infoChoice = lower(infoChoice);
@@ -81,7 +81,7 @@ void Game::loop(){
             }
         }
         // movement
-        else if (isIn(lower(playerChoice_), {"m","move"}))
+        else if (playerChoice_ == Action::Move::SELF)
         {
             text = "\nMove to: Up - Down - Left - Right - Back\n->";
             std::cout << text;
@@ -97,7 +97,7 @@ void Game::loop(){
             }
         }
         // stuffing
-        else if(isIn(lower(playerChoice_), {"s","stuff"})){
+        else if(playerChoice_ == Action::Stuff::SELF){
             Inventory* invent = player_.getInventory();
 
             bool thereIsWeapon = (invent->nbWeapons() > 0) ? true : false;
@@ -183,14 +183,14 @@ void Game::loop(){
             }
         }
         // crafting
-        else if (isIn(lower(playerChoice_), {"crafting"}))
+        else if (playerChoice_ == Action::Crafting::SELF)
         {
             // faire une fonction qui balaye l'inventaire du joueur et verifie les crafts possibles
             
         }
         
         // fighting
-        else if (canFight_ && isIn(lower(playerChoice_), {"f","fight"}))
+        else if (canFight_ && playerChoice_ == Action::Fight::SELF)
         {
             text = "\nFight : Attack";
             text += " - Escape\n->";
@@ -262,7 +262,7 @@ void Game::loop(){
             }            
         }
         // looting
-        else if (canLoot_ && isIn(lower(playerChoice_),{"l","loot"}))
+        else if (canLoot_ && playerChoice_ == Action::Loot::SELF)
         {
             std::cout << "What do you want to pick up ?\nEnter the item's name.\n\n";
             std::cout << map_.getCurrentTile()->getStorage()->info();
@@ -284,12 +284,8 @@ void Game::loop(){
             }
             
         }
-        else if (isIn(lower(playerChoice_),{"craft"}))
-        {
-            
-        }
         // creation
-        else if (isIn(lower(playerChoice_), {"c", "create"}))
+        else if (playerChoice_ == Action::Create::SELF)
         {
             std::cout << "Create : Weapon - Armor - Object - Enemy - Back\n";
 
@@ -505,4 +501,18 @@ void Game::handleCreateEntity(Group* team){
     team->addEnemy(newEntity);
     ++nbEntities_;
     entityNames_.push_back(entityName);
+}
+
+std::string Game::autocomplete(std::vector<std::string> words, std::string input){
+    std::vector<std::string> matchs;
+    for (const std::string& word : words){
+        if (lower(word).find(lower(input)) == 0)
+        {
+            matchs.push_back(word);
+        }
+    }
+
+    if (matchs.size() == 1){return matchs[0];}
+
+    return "";
 }

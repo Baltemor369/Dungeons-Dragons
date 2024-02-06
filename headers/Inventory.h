@@ -34,4 +34,6 @@ public:
     void addItem(Object* item); 
     void removeItem(std::string name);
     std::vector<std::tuple<int, Object*>> getItems()const{return items_;}
+
+    bool canCraft(Recipe recipe);
 };
