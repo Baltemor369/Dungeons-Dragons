@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Craft.h"
-
 #include <string> 
 #include <vector>
 #include <map>
@@ -22,6 +20,11 @@ namespace Const  {
     namespace Reserved {
         const std::vector<std::string> NAMES = {"Chest","Barrel","Box","Wardrobe", "Bag", "Crate", "Locker"};
     }
+    namespace Response {
+        const std::vector<std::string> ALL = {"Yes", "No"};
+        const std::string YES = "Yes";
+        const std::string NO = "No";
+    }
         
     namespace Default {
         const std::string WEAPON_NAME = "Hands";
@@ -39,8 +42,9 @@ namespace Const  {
 namespace Action
 {
     const std::vector<std::string> ALL = {"Info","Move","Stuff","Crafting","Fight","Loot","Create","Exit", "Quit"};
+    const std::string HOME = "Home";
     namespace Info {
-        const std::vector<std::string> ALL = {"Tile","Player","Inventory","Weapon","Armor"};
+        const std::vector<std::string> KEY_WORDS = {"Tile","Player","Inventory","Weapon","Armor"};
         const std::string SELF = "Info";
         const std::string TILE = "Tile";
         const std::string PLAYER = "Player";
@@ -52,27 +56,31 @@ namespace Action
         const std::string SELF = "Move";
     }
     namespace Stuff {
-        const std::vector<std::string> ALL = {"Equip","Unequip"};
+        const std::vector<std::string> KEY_WORDS = {"Equip","Unequip","Weapon","Armor"};
         const std::string SELF = "Stuff";
-        const std::string EQUIP = "Equip";
-        const std::string UNEQUIP = "Unequip";
+        const std::string EQUIP_WEAPON = "Equip Weapon";
+        const std::string UNEQUIP_WEAPON = "Unequip Weapon";
+        const std::string EQUIP_ARMOR = "Equip Armor";
+        const std::string UNEQUIP_ARMOR = "Unequip Armor";
     }
     namespace Crafting {
-        const std::vector<std::string> ALL = {};
+        const std::vector<std::string> KEY_WORDS = {};
         const std::string SELF = "Crafting";
     }
     namespace Fight {
-        const std::vector<std::string> ALL = {"Attack","Escape"};
+        const std::vector<std::string> KEY_WORDS = {"Attack", "Swap", "Weapon", "Armor", "Escape"};
         const std::string SELF = "Fight";
         const std::string ATTACK = "Attack";
+        const std::string SWAP_WEAPON = "Swap Weapon";
+        const std::string SWAP_ARMOR = "Swap Armor";
         const std::string ESCAPE = "Escape";
     }
     namespace Loot {
-        const std::vector<std::string> ALL = {};
+        const std::vector<std::string> KEY_WORDS = {};
         const std::string SELF = "Loot";
     }
     namespace Create {
-        const std::vector<std::string> ALL = {"Weapon","Armor","Object","Enemy"};
+        const std::vector<std::string> KEY_WORDS = {"Weapon","Armor","Object","Enemy"};
         const std::string SELF = "Create";
         const std::string WEAPON = "Weapon";
         const std::string ARMOR = "Armor";
@@ -84,20 +92,20 @@ namespace Action
 namespace Key {
     // AZERTY keyboard
     namespace FR {
-        const std::vector<std::string> KEYS = {"up", "down", "left", "right","z","q","s","d"};
-        const std::vector<std::string> KEY_UP = {"up", "z"};
-        const std::vector<std::string> KEY_DOWN = {"down", "s"};
-        const std::vector<std::string> KEY_LEFT = {"left", "q"};
-        const std::vector<std::string> KEY_RIGHT = {"right", "d"};
+        const std::vector<std::string> KEY_WORDS = {"Up", "Down", "Left", "Right","Z","Q","S","D"};
+        const std::vector<std::string> KEY_UP = {"Up", "Z"};
+        const std::vector<std::string> KEY_DOWN = {"Down", "S"};
+        const std::vector<std::string> KEY_LEFT = {"Left", "Q"};
+        const std::vector<std::string> KEY_RIGHT = {"Right", "D"};
     }
 
     // QWERTY keyboard
     namespace EN {
-        const std::vector<std::string> KEYS = {"up", "down", "left", "right","w","a","s","d"};
-        const std::vector<std::string> KEY_UP = {"up", "w"};
-        const std::vector<std::string> KEY_DOWN = {"down", "s"};
-        const std::vector<std::string> KEY_LEFT = {"left", "a"};
-        const std::vector<std::string> KEY_RIGHT = {"right", "d"};
+        const std::vector<std::string> KEY_WORDS = {"Up", "Down", "Left", "Right","W","A","S","D"};
+        const std::vector<std::string> KEY_UP = {"Up", "W"};
+        const std::vector<std::string> KEY_DOWN = {"Down", "S"};
+        const std::vector<std::string> KEY_LEFT = {"Left", "A"};
+        const std::vector<std::string> KEY_RIGHT = {"Right", "D"};
     }
 }
 
@@ -139,10 +147,19 @@ namespace Items {
         const std::string IRON_BAR = "Iron bar";
         const std::string WOOD = "Wood";
         const std::string FLINT = "Flint";
-        const std::string ROPE = "rope";
+        const std::string ROPE = "Rope";
 
     } 
-    namespace Weapons {} 
+    namespace Weapons {
+        const std::string WOODEN_SWORD = "Wooden sword";
+        const std::string COPPER_SWORD = "Wooden sword";
+        const std::string TERRALITE_SWORD = "Wooden sword";
+        const std::string IRON_SWORD = "Wooden sword";
+        const std::string STEEL_SWORD = "Wooden sword";
+        const std::string GOLD_SWORD = "Wooden sword";
+        const std::string METEORITE_SWORD = "Wooden sword";
+        const std::string ORIX_SWORD = "Wooden sword"; 
+    } 
     namespace Armors {} 
     namespace Others {} 
     
@@ -152,21 +169,4 @@ namespace Items {
     // ORITIUM : cyan orb floating and lootable with mob around(some instant attack, other attack only when you get the orb) , biome ATLIS : paradis beach jungle floating in the sky
     // terralite : ore forest orange&marron
     // Hastelloy ?
-}
-
-using Recipe = std::vector<std::tuple<int, std::string>>;
-
-namespace Crafting {
-    namespace Weapon {
-
-    }
-    namespace Armor {
-
-    }
-    namespace Components {
-        // const Craft stick(new Object(Items::Components::STICK), {{2,Items::Components::WOOD}});
-        // const Craft ironStick(new Object(Items::Components::IRON_BAR), {{2,Items::Ingots::IRON}});
-        // const Craft boneStick(new Object(Items::Components::BONE_STICK), {{2, Items::Components::BONE}});
-        // const Craft rope(new Object(Items::Components::ROPE), {{3, Items::Components::LEAVES}});
-    }
 }

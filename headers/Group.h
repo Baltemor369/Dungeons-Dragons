@@ -6,7 +6,7 @@ class Group {
 private:
     int size_;
     Entity* player_;
-    std::vector<Entity*> enemies_;
+    std::vector<std::tuple<int, Entity*>> enemies_;
 public:
     Group();
     ~Group();
@@ -16,12 +16,17 @@ public:
 
     int size() const { return size_; }
     Entity* getPlayer() const { return player_; }
-    std::vector<Entity*> getEnemies() const { return enemies_; }
-    Entity* getEnemy(std::string id) const ;
+    std::vector<std::tuple<int, Entity*>> getEnemies() const { return enemies_; }
+    int getNbEntity(std::string name) const ;
+    const std::tuple<int, Entity*>* getElt(std::string name) const;
+    Entity* getEntity(std::string name) const ;
 
     void addPlayer(Entity& player);
-    void addEnemy(Entity* enemy);
     void removePlayer();
-    void removeEnemy(std::string name);
+    void addEnemy(Entity* enemy, int stack=1);
+    void removeEnemy(std::string name, int stack=1);
+    void modifyEntityStack(std::string name, int delta);
+
+    void clean();
 };
 

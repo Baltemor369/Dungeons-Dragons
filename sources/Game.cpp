@@ -1,6 +1,6 @@
 #include "../headers/Game.h"
 
-Game::Game(std::string playerName):player_(playerName), running_(true), canFight_(false), canLoot_(false), nbEntities_(0), nbObjects_(0), playerChoice_("")
+Game::Game(std::string playerName):player_(playerName), running_(true), canFight_(false), canLoot_(false), nbEntities_(0), nbObjects_(0), playerChoice_(Action::HOME)
 {
     Tile* t = new Tile(0,0, true);
     map_.addTile(t);
@@ -22,62 +22,61 @@ void Game::loop(){
         std::string text;
         map_.setCurrentTile(map_.getTile(player_.getX(), player_.getY()));
         auto currentTile = map_.getCurrentTile();
-        if (lower(playerChoice_) == "")
+        if (Str::capitalize(playerChoice_) == Action::HOME)
         {
-            text = "\nAction : Info - Move - Stuff - Crafting";
+            text = "\nAction :\n- Info \n- Move \n- Stuff \n- Crafting";
             if (!currentTile->isAlone())
             {
                 canFight_ = true;
-                text += " - Fight";
+                text += "\n- Fight";
             }else{
                 canFight_ = false;
             }
             if (currentTile->getStorage()->size() > 0)
             {
                 canLoot_ = true;
-                text += " - Loot";
+                text += "\n- Loot";
             }else{
                 canLoot_ = false;
             }
-            text += " - Create";
-            text += " - Exit\n->";
+            text += "\n- Create";
+            text += "\n- Exit\n->";
             
             std::cout << text;
             playerChoice_ = input();
-            playerChoice_ = lower(playerChoice_);
         }
-        playerChoice_ = autocomplete({Action::ALL}, playerChoice_);
+        playerChoice_ = Str::autocomplete({Action::ALL}, playerChoice_);
         // informations
         if (playerChoice_ == Action::Info::SELF)
         {
-            text = "\nInfo : Tile - Player - Inventory - Weapon equiped - equiped Armor - Back\n->";
+            text = "\nInfo :\n- Tile\n- Player \n- Inventory \n- Weapon equiped \n- equiped Armor \n- Back\n->";
             std::cout << text;
             std::string infoChoice = input();
-            infoChoice = lower(infoChoice);
+            infoChoice = Str::autocomplete(Action::Info::KEY_WORDS, Str::capitalize(infoChoice));
 
-            if (isIn(lower(infoChoice), {"p", "player"}))
+            if (infoChoice == Action::Info::PLAYER)
             {
                 std::cout << player_.info();
             }
-            else if (isIn(lower(infoChoice),{"i", "inventory"}))
+            else if (infoChoice == Action::Info::INVENTORY)
             {
                 std::cout << player_.getInventory()->info();
             }
-            else if (isIn(lower(infoChoice),{"w", "weapon"}))
+            else if (infoChoice == Action::Info::WEAPON)
             {
                 std::cout << player_.getWeapon()->info();
             }
-            else if (isIn(lower(infoChoice),{"a","armor"}))
+            else if (infoChoice == Action::Info::ARMOR)
             {
                 std::cout << player_.getArmor()->info();
             }
-            else if (isIn(lower(infoChoice),{"t", "tile"}))
+            else if (infoChoice == Action::Info::TILE)
             {
                 std::cout << currentTile->info();
             }
             else
             {
-                playerChoice_ = "";
+                playerChoice_ = Action::HOME;
             }
         }
         // movement
@@ -86,14 +85,15 @@ void Game::loop(){
             text = "\nMove to: Up - Down - Left - Right - Back\n->";
             std::cout << text;
             std::string moveChoice = input();
-            moveChoice = lower(moveChoice);
+            moveChoice = Str::capitalize(moveChoice);
             
-            if (isIn(moveChoice, Key::FR::KEYS))
+            if (Str::isIn(moveChoice, Key::FR::KEY_WORDS))
             {
                 map_.movement(moveChoice);
+                std::cout << map_.getCurrentTile()->info();
             }else
             {
-                playerChoice_ = "";
+                playerChoice_ = Action::HOME;
             }
         }
         // stuffing
@@ -102,215 +102,265 @@ void Game::loop(){
 
             bool thereIsWeapon = (invent->nbWeapons() > 0) ? true : false;
             bool thereIsArmor = (invent->nbArmors() > 0) ? true : false;
+            bool weaponEquiped = player_.hasWeaponEquipped();
+            bool armorEquiped = player_.hasArmorEquipped(); 
             
             std::cout << player_.getWeapon()->info();
             std::cout << player_.getArmor()->info();
             std::cout << invent->info();
             
             std::string text("Action : ");
-            if (invent->nbWeapons() > 0 || invent->nbArmors() > 0)
+            
+            if (thereIsWeapon)
             {
-                text += " Equip";
+                text += "\n- Equip Weapon";
             }
-            if (player_.hasWeaponEquipped() || player_.hasArmorEquipped())
+            if (thereIsArmor)
             {
-                text += " - Unequip";
+                text += "\n- Equip Armor";
             }
-
-            text += " - Exit\n->";
+            if (weaponEquiped)
+            {
+                text += "\n- Unequip Weapon";
+            }
+            if (armorEquiped)
+            {
+                text += "\n- Unequip Armor";
+            }
+            text += "\n- Exit\n->";
             std::cout << text;
 
-            std::string stuffChoice = input();
+            std::string stuffChoice = Str::autocomplete(Action::Stuff::KEY_WORDS, input());
 
-            if (thereIsWeapon && isIn(lower(stuffChoice),{"e","equipp"}))
+            if (thereIsWeapon && stuffChoice == Action::Stuff::EQUIP_WEAPON)
             {
 
-                std::cout << "What do you want to equip ?\nEnter the weapon/armor name.\n" << player_.getInventory()->info() << "=>";
+                std::cout << "What do you want to equip ?\nEnter the weapon's name.\n";
+                for (auto it : invent->getWeapons())
+                {
+                    std::cout << it->info();
+                }
+                std::cout << "=>";
                 std::string itemChoice = input();
 
-                auto item = player_.getInventory()->getItemByName(itemChoice);
+                Object* item = player_.getInventory()->getItemByName(itemChoice);
                 
-                Weapon* w = dynamic_cast<Weapon*>(item);
-                if (w)
+                Weapon* it = dynamic_cast<Weapon*>(item);
+                if (it)
                 {
-                    player_.equipWeapon(w);
+                    player_.equipWeapon(it);
                     std::cout << "Weapon equipped\n";
-                }else{
-                    Armor* a = dynamic_cast<Armor*>(item);
-                    if (a)
-                    {
-                        player_.equipArmor(a);
-                        std::cout << "Armor equipped\n";
-                    }else{
-                        std::cout << "This item is not equipable\n";
-                    }
                 }
-            }
-            else if (thereIsArmor && isIn(lower(stuffChoice), {"u","unequipp"}))
+            }else if (thereIsArmor && stuffChoice == Action::Stuff::EQUIP_ARMOR)
             {
-                std::string text = "Unequip : ";
-                if (player_.hasWeaponEquipped())
-                {
-                    text += "Weapon";
-                }
-                if (player_.hasArmorEquipped())
-                {
-                    if (player_.hasWeaponEquipped())
-                    {
-                        text += " - ";
-                    }
-                    
-                    text += "Armor";
-                }
-                text += " - Back\n";
 
-                std::cout << text;
-                std::string tmp = input();
+                std::cout << "What do you want to equip ?\nEnter the armor's name.\n";
+                for (auto it : invent->getArmors())
+                {
+                    std::cout << it->info();
+                }
+                std::cout << "=>";
+                std::string itemChoice = input();
+
+                Object* item = player_.getInventory()->getItemByName(itemChoice);
                 
-                // unequip player stuff part
-                if (isIn(lower(tmp), {"w","weapon"}))
+                Armor* it = dynamic_cast<Armor*>(item);
+                if (it)
                 {
-                    player_.unequipWeapon();
+                    player_.equipArmor(it);
+                    std::cout << "Armor equipped\n";
                 }
-                else if (isIn(lower(tmp), {"a","armor"}))
-                {
-                    player_.unequipArmor();
-                }else{
-                    playerChoice_ = "s";
-                }
+            }else if (weaponEquiped && stuffChoice == Action::Stuff::UNEQUIP_WEAPON)
+            {
+                player_.unequipWeapon();
+            }else if (armorEquiped && stuffChoice == Action::Stuff::UNEQUIP_ARMOR)
+            {
+                player_.unequipArmor();
             }else{
-                playerChoice_ = "";
+                playerChoice_ = Action::HOME;
             }
         }
         // crafting
         else if (playerChoice_ == Action::Crafting::SELF)
         {
-            // faire une fonction qui balaye l'inventaire du joueur et verifie les crafts possibles
+            
             
         }
         
         // fighting
         else if (canFight_ && playerChoice_ == Action::Fight::SELF)
         {
-            text = "\nFight : Attack";
-            text += " - Escape\n->";
-            std::cout << text;
+            /* steps :
+             turn by turn
+             player attack first
+             then each monster on the tile
+             player can do  :
+            - normal attack 
+            - strong attack
+            - swap weapon or armor
+            - escape fight
+            */
+            std::cout << "Action : Attack - Strong Attack - Swap Weapon - Swap Armor - Escape\n=> ";
+            std::string actionChoice = Str::autocomplete(Action::Fight::KEY_WORDS, input());
 
-            std::string fightChoice = input();
-
-            Entity* target;
-            if (isIn(lower(fightChoice), {"a", "attack"}))
+            if (actionChoice == Action::Fight::ATTACK)
             {
-                // get all enemy on the tile
-                auto ennemies = currentTile->getGroup()->getEnemies();
-                if (ennemies.size() != 0)
+                auto targets = map_.getCurrentTile()->getGroup();
+                if (targets->size() == 1)
                 {
-                    if (ennemies.size() == 1)
+                    targets->getPlayer()->attack(*std::get<1>(targets->getEnemies().at(0)));
+                }else
+                {
+                    std::cout << targets->info() << "Which enemy to attack ?\n=> ";
+                    std::vector<std::string> names;
+                    for (auto elt : targets->getEnemies())
                     {
-                        target = ennemies.at(0);
-                    }else{
-                        // display ennemies name/id
-                        std::string text("Enter the name of the enemy you want to attack :\n");
-                        for(auto elt : ennemies){
-                            text += elt->getName() + "\n";
-                        }
-                        std::cout << text;
-
-                        // get player choice
-                        std::string ennemyChoice = input();
-                        ennemyChoice = lower(ennemyChoice);
-
-                        //get the target
-                        target = currentTile->getGroup()->getEnemy(ennemyChoice);
+                        names.push_back(std::get<1>(elt)->getName());
                     }
-                    
-                    // attack the choosen enemy
-                    std::cout << player_.attack(*target);
-                    
-                    // if enemy is dead
-                    if (!target->isAlive())
-                    {
-                        
-                        if (target->getWeapon()->getName() != Const::Default::WEAPON_NAME)
-                        {
-                            currentTile->getStorage()->addItem(target->getWeapon());
-                        }
-                        if (target->getArmor()->getName() != Const::Default::ARMOR_NAME)
-                        {
-                            currentTile->getStorage()->addItem(target->getArmor());
-                        }
-                        
-                        for(auto item : target->getInventory()->getItems()){
-                            currentTile->getStorage()->addItem(std::get<1>(item));
-                        }
-                        
-                        currentTile->getGroup()->removeEnemy(target->getName());
+                    std::string enemyChoice = Str::autocomplete(names, input());
 
-                        playerChoice_ = "";
-                    }
-                }else{
-                    std::cout << "There is no enemy on this tile\n";
+                    targets->getPlayer()->attack(*std::get<1>(*targets->getElt(enemyChoice)));
                 }
-            }
-            else if (isIn(lower(fightChoice), {"e", "escape"}))
+            }else if (actionChoice == Action::Fight::SWAP_WEAPON)
             {
-                playerChoice_ = "";
-            }
-            else
+                // get all weapons in the inventory
+                auto weaponsList = player_.getInventory()->getWeapons();
+                // if only one weapon
+                if (weaponsList.size() == 1)
+                {
+                    // switch with this unique weapon
+                    player_.equipWeapon(weaponsList[0]);
+                }
+                // if more than 1 possibilities
+                else if (weaponsList.size() > 1)
+                {
+                    std::vector<std::string> weaponNames;
+                    for (auto weapon : weaponsList)
+                    {
+                        // get a list with weapon names
+                        weaponNames.push_back(weapon->getName());
+                        // display all names
+                        std::cout << weapon->getName() << std::endl;
+                    }
+                    std::cout << "Enter the weapon name which switch with : ";
+                    // ask the weapon name targeted
+                    std::string weaponName = Str::autocomplete(weaponNames, input());
+                    if (weaponName != "")
+                    {
+                        Weapon* buffer = dynamic_cast<Weapon*>(player_.getInventory()->getItemByName(weaponName));
+                        if (buffer)
+                        {
+                            player_.equipWeapon(buffer);
+                        }
+                    }
+                }
+            }else if (actionChoice == Action::Fight::SWAP_ARMOR)
             {
-                playerChoice_ = "";
-            }            
+                // get all armors in the inventory
+                auto armorsList = player_.getInventory()->getArmors();
+                // if only one armor
+                if (armorsList.size() == 1)
+                {
+                    // switch with this unique armor
+                    player_.equipArmor(armorsList[0]);
+                }
+                // if more than 1 possibilities
+                else if (armorsList.size() > 1)
+                {
+                    std::vector<std::string> armorNames;
+                    for (auto armor : armorsList)
+                    {
+                        // get a list with armor names
+                        armorNames.push_back(armor->getName());
+                        // display all names
+                        std::cout << armor->getName() << std::endl;
+                    }
+                    std::cout << "Enter the armor name which switch with : ";
+                    // ask the armor name targeted
+                    std::string armorName = Str::autocomplete(armorNames, input());
+                    if (armorName != "")
+                    {
+                        Armor* buffer = dynamic_cast<Armor*>(player_.getInventory()->getItemByName(armorName));
+                        if (buffer)
+                        {
+                            player_.equipArmor(buffer);
+                        }
+                    }
+                }
+            }else{
+                playerChoice_ = Action::HOME;
+            }
         }
         // looting
         else if (canLoot_ && playerChoice_ == Action::Loot::SELF)
         {
-            std::cout << "What do you want to pick up ?\nEnter the item's name.\n\n";
             std::cout << map_.getCurrentTile()->getStorage()->info();
-            std::cout << "=>";
+            std::cout << "What do you want to pick up ?\nEnter the item's name.\n=>";
             std::string lootChoice = input();
-
-            auto item = map_.getCurrentTile()->getStorage()->getItemByName(lootChoice);
             
-            if (item != nullptr)
+            if (Str::isIn(Str::capitalize(lootChoice), {"","Back"}))
             {
-                std::cout << "Looting done\n";
-                player_.getInventory()->addItem(item);
-                map_.getCurrentTile()->getStorage()->removeItem(item->getName());
-
-                playerChoice_ = (map_.getCurrentTile()->getStorage()->isEmpty()) ? "" : "l";
+                playerChoice_ = Action::HOME; 
             }else{
-                std::cout << "Looting failed\n\n";
-                playerChoice_ = "l";
+                // get the elt
+                auto item = map_.getCurrentTile()->getStorage()->getItemByName(lootChoice);
+                
+                // if found
+                if (item != nullptr)
+                {
+                    std::cout << "how many ?\n=>";
+                    int stackChoice = inputInt(1);
+                    // regulize the stack
+                    int maxStack = map_.getCurrentTile()->getStorage()->getStackItem(lootChoice);
+                    // if number ask is over number of items stacked : get max, else get the wished number
+                    int pickStack = stackChoice >= maxStack ? maxStack : stackChoice;
+                    // add to player's stuff
+                    player_.getInventory()->addItem(item, pickStack);
+                    //  remove from the tile's stuff
+                    map_.getCurrentTile()->getStorage()->removeItem(item->getName(), stackChoice);
+                    // map_.getCurrentTile()->getStorage()->removeItem(item->getName(), stackChoice);
+                    std::cout << "Looting done\n";
+
+                    if (map_.getCurrentTile()->getStorage()->isEmpty())
+                    {
+                        playerChoice_ = Action::HOME;
+                        canLoot_ = false;
+                    }else {
+                        playerChoice_ = Action::Loot::SELF;
+                    }
+                }else{
+                    std::cout << "Looting failed\n";
+                    playerChoice_ = Action::Loot::SELF;
+                }
             }
-            
         }
         // creation
         else if (playerChoice_ == Action::Create::SELF)
         {
             std::cout << "Create : Weapon - Armor - Object - Enemy - Back\n";
 
-            std::string createChoice = input();
+            std::string createChoice = Str::autocomplete(Action::Create::KEY_WORDS, input());
 
-            if (isIn(lower(createChoice),{"w","weapon"}))
+            if (createChoice == Action::Create::WEAPON)
             {
                 
                 handleCreateWeapon(currentTile->getStorage());
                 
-            }else if (isIn(lower(createChoice),{"a","armor"}))
+            }else if (createChoice == Action::Create::ARMOR)
             {
                 
                 handleCreateArmor(currentTile->getStorage());
                 
-            }else if (isIn(lower(createChoice),{"o","object"}))
+            }else if (createChoice == Action::Create::OBJECT)
             {
                 
                 handleCreateObject(currentTile->getStorage());
 
-            }else if (isIn(lower(createChoice),{"e","enemy"}))
+            }else if (createChoice == Action::Create::ENEMY)
             {
                 handleCreateEntity(currentTile->getGroup());
             }else{
-                playerChoice_ = "";
+                playerChoice_ = Action::HOME;
             }
         }
         // exit game
@@ -339,7 +389,6 @@ int Game::inputInt(int defaultValue){
     {
         buffInt = defaultValue;
     }
-    
 
     return buffInt;
 }
@@ -350,7 +399,7 @@ void Game::handleCreateWeapon(Inventory* invent){
     {
         std::cout << "Enter name : ";
         weaponName = input();
-    } while (weaponName.size() > 1);
+    } while (weaponName.size() < 2);
 
     int damage;
     do
@@ -376,11 +425,19 @@ void Game::handleCreateWeapon(Inventory* invent){
         vampirism = inputInt(Const::Default::WEAPON_VAMPIRISM);
     } while (vampirism < 0 && vampirism > 100);
 
+    int stack;
+    do
+    {
+        std::cout << "Enter stack value( >=1) : ";
+        stack = inputInt(1);
+    } while (stack < 1);
+    
+
     std::cout << "Weapon created \n";
-    invent->addItem(new Weapon(weaponName, damage, penetration, vampirism));
+    invent->addItem(new Weapon(weaponName, damage, penetration, vampirism), stack);
     ++nbObjects_;
     
-    playerChoice_ = "c";
+    playerChoice_ = Action::Create::SELF;
 }
 
 void Game::handleCreateArmor(Inventory* invent){
@@ -389,7 +446,7 @@ void Game::handleCreateArmor(Inventory* invent){
     {
         std::cout << "Enter name : ";
         armorName = input();
-    } while (armorName.size() > 1);
+    } while (armorName.size() < 2);
 
     int defense;
     do
@@ -415,13 +472,20 @@ void Game::handleCreateArmor(Inventory* invent){
         regeneration = inputInt(Const::Default::ARMOR_REGENERATION);
     } while (regeneration < 0 && regeneration > 100);
 
+    int stack;
+    do
+    {
+        std::cout << "Enter stack value( >=1) : ";
+        stack = inputInt(1);
+    } while (stack < 1);
+
     std::cout << "Armor created \n";
-    invent->addItem(new Armor(armorName, defense, thorns, regeneration));
+    invent->addItem(new Armor(armorName, defense, thorns, regeneration), stack);
     ++nbObjects_;
 
     itemNames_.push_back(armorName);
     
-    playerChoice_ = "c";
+    playerChoice_ = Action::Create::SELF;
 }
 
 void Game::handleCreateObject(Inventory* invent){
@@ -430,15 +494,22 @@ void Game::handleCreateObject(Inventory* invent){
     {
         std::cout << "Enter name : ";
         name = input();
-    } while (name.size() > 2);
+    } while (name.size() < 2);
+
+    int stack;
+    do
+    {
+        std::cout << "Enter stack value( >=1) : ";
+        stack = inputInt(1);
+    } while (stack < 1);
 
     std::cout << "Object created \n";
-    invent->addItem(new Object(name));
+    invent->addItem(new Object(name), stack);
     ++nbObjects_;
 
     itemNames_.push_back(name);
     
-    playerChoice_ = "c";
+    playerChoice_ = Action::Create::SELF;
 }
 
 void Game::handleCreateEntity(Group* team){
@@ -447,7 +518,7 @@ void Game::handleCreateEntity(Group* team){
     {
         std::cout << "Enter the name : ";
         entityName = input();
-    } while (entityName.size() > 2 && !isIn(entityName, Const::Reserved::NAMES));
+    } while (entityName.size() <= 2 );
     
 
     Entity* newEntity = new Entity(entityName, map_.getCurrentTile()->getX(), map_.getCurrentTile()->getY());
@@ -459,34 +530,32 @@ void Game::handleCreateEntity(Group* team){
     std::cout << "Add a weapon to the inventory (y/n) ?";
     std::string weaponChoice = input();
 
-    if (isIn(lower(weaponChoice),{"y","yes"}))
+    if (Str::autocomplete(Const::Response::ALL, weaponChoice) == Const::Response::YES)
     {
         do
         {
             handleCreateWeapon(newEntity->getInventory());
 
             std::cout << "equip this weapon ?(y/n)";
-            if (isIn(lower(input()),{"y","yes"}))
+            if (Str::autocomplete(Const::Response::ALL, input()) == Const::Response::YES)
             {
                 newEntity->equipWeapon(new Weapon(weaponName, damage, penetration, vampirism));
-            }else{
-                newEntity->getInventory()->addItem(new Weapon(weaponName, damage, penetration, vampirism));
             }
 
             std::cout << "Create another weapon ?(y/n)";
             weaponChoice = input();
-        } while (isIn(lower(weaponChoice),{"y","yes"}));
+        } while (Str::isIn(Str::capitalize(weaponChoice),{"y","yes"}));
     }
-
+    
     std::cout << "Add a armor to the inventory (y/n) ?";
     std::string armorChoice = input();
-    if (isIn(lower(armorChoice),{"y","yes"})){
+    if (Str::autocomplete(Const::Response::ALL, armorChoice) == Const::Response::YES){
         do
         {
             handleCreateArmor(newEntity->getInventory());
 
             std::cout << "equip this armor ?(y/n)";
-            if (isIn(lower(input()),{"y","yes"}))
+            if (Str::isIn(Str::capitalize(input()),{"y","yes"}))
             {
                 newEntity->equipArmor(new Armor(armorName, defense, thorns, regeneration));
             }else{
@@ -495,24 +564,47 @@ void Game::handleCreateEntity(Group* team){
             
             std::cout << "Create another armor ?(y/n)";
             armorChoice = input();
-        } while (isIn(lower(armorChoice), {"y","yes"}));
+        } while (Str::autocomplete(Const::Response::ALL, armorChoice) == Const::Response::YES);
     }
+    rd_.setBorder(1,50);
+    newEntity->getInventory()->addItem(new Object("Gold"), rd_.getRandomNumber());
 
     team->addEnemy(newEntity);
     ++nbEntities_;
     entityNames_.push_back(entityName);
+
+    std::cout << "Entity created.\n";
 }
 
-std::string Game::autocomplete(std::vector<std::string> words, std::string input){
-    std::vector<std::string> matchs;
-    for (const std::string& word : words){
-        if (lower(word).find(lower(input)) == 0)
-        {
-            matchs.push_back(word);
-        }
+void generateRandomItem(Inventory* chest){
+    Random rd(0,2);
+    int buff = rd.getRandomNumber();
+    // add a weapon
+    if (buff == 0)
+    {
+        rd.setBorder(1,50);
+        int damage = rd.getRandomNumber();
+        rd.setBorder(1,damage);
+        int letha = rd.getRandomNumber();
+        rd.setBorder(0,letha);
+        int vamp = rd.getRandomNumber();
+        chest->addItem(new Weapon("Sword", damage, letha, vamp));
     }
-
-    if (matchs.size() == 1){return matchs[0];}
-
-    return "";
+    // add a armor
+    else if (buff == 1)
+    {
+        rd.setBorder(1,50);
+        int def = rd.getRandomNumber();
+        rd.setBorder(1,def);
+        int thorns = rd.getRandomNumber();
+        rd.setBorder(0,thorns);
+        int regen = rd.getRandomNumber();
+        chest->addItem(new Armor("Orix", def, thorns, regen));
+    }
+    // add a object
+    else if (rd.getRandomNumber() == 2)
+    {
+        rd.setBorder(1,20);
+        chest->addItem(new Object("Gold"), rd.getRandomNumber());
+    }
 }

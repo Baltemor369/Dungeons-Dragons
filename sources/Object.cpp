@@ -7,7 +7,7 @@ Object::Object(const Object& obj){
 Object::~Object() {}
 
 std::string Object::info() const {
-    return "Object: " + name_ + "\n";
+    return "Object : " + name_ + "\n";
 }
 
 void Object::setName(const std::string name) {

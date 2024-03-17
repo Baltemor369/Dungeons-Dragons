@@ -7,7 +7,7 @@ Group::Group() : size_(0) {
 Group::~Group() {
     player_ = nullptr;
     for(auto& elt : enemies_){
-        delete elt;
+        delete std::get<1>(elt);
     }
 }
 
@@ -17,8 +17,8 @@ std::string Group::recap()const{
     if(player_ != nullptr){
         text += player_->recap();
     }
-    for(Entity* elt : enemies_){
-        text += elt->recap();
+    for(auto elt : enemies_){
+        text += std::get<1>(elt)->recap();
     }
     return text;
 }
@@ -29,41 +29,94 @@ std::string Group::info() const {
     if(player_ != nullptr){
         text += player_->info();
     }
-    for(Entity* elt : enemies_){
-        text += elt->info();
+    for(auto elt : enemies_){
+        text += std::get<1>(elt)->info();
     }
     return text;
 }
 
-Entity* Group::getEnemy(std::string name) const {
+Entity* Group::getEntity(std::string name) const {
     for (const auto& elt : enemies_) {
-        if (elt->getName() == name) {
-            return elt;
+        if (std::get<1>(elt)->getName() == name) {
+            return std::get<1>(elt);
         }
     }
-    return nullptr;
+    return Const::ERROR::POINTER;
+}
+
+int Group::getNbEntity(std::string name) const {
+    for (const auto& elt : enemies_) {
+        if (std::get<1>(elt)->getName() == name) {
+            return std::get<0>(elt);
+        }
+    }
+    return Const::ERROR::INT;
 }
 
 void Group::addPlayer(Entity& player) {
     player_ = &player;
 }
 
-void Group::addEnemy(Entity* enemy) {
-    enemies_.push_back(enemy);
-    ++size_;
+void Group::addEnemy(Entity* enemy, int stack) {
+    auto find = getElt(enemy->getName());
+    if (find != nullptr)
+    {
+        modifyEntityStack(enemy->getName(), stack);
+    }else{
+        enemies_.push_back({stack, enemy});
+    }
+    size_ += stack;
 }
 
 void Group::removePlayer() {
     player_ = nullptr;
 }
 
-void Group::removeEnemy(std::string name) {
-    int i(0);
-    for (auto e : enemies_) {
-        if ((e)->getName() == name) {
-            enemies_.erase(enemies_.begin()+i);
-            --size_;
+void Group::removeEnemy(std::string name, int stack) {
+    auto find = getElt(name);
+    if (find != nullptr)
+    {
+        if (std::get<0>(*find) >= stack)
+        {
+            modifyEntityStack(name, -stack);
+        }else{
+            modifyEntityStack(name, -std::get<0>(*find));
         }
-        ++i;
+    }   
+    
+    clean();
+}
+
+void Group::modifyEntityStack(std::string name, int delta){
+    for (auto& it : enemies_)
+    {
+        if (std::get<1>(it)->getName() == name)
+        {
+            std::get<0>(it) += delta;
+            size_ += delta;
+        }
+    }
+}
+
+const std::tuple<int, Entity*>* Group::getElt(std::string name) const{
+    for (auto& it : enemies_)
+    {
+        if (std::get<1>(it)->getName() == name)
+        {
+            return &it;
+        }
+    }
+    return nullptr;
+}
+
+void Group::clean(){
+    for (auto it = enemies_.begin(); it != enemies_.end();)
+    {
+        if (std::get<0>(*it) == 0)
+        {
+            enemies_.erase(it);
+        }else{
+            ++it;
+        }   
     }
 }

@@ -82,6 +82,4 @@ void Map::movement(std::string direction){
     setCurrentTile(tile);
     // add the player to the new tile
     currentTile_->getGroup()->addPlayer(*player);
-
-    std::cout << currentTile_->info();
 }

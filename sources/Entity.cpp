@@ -1,27 +1,27 @@
 #include "../headers/Entity.h"
 
-Entity::Entity(std::string name):name_(name), hp_(100), velocity_(1), location_(0,0)
+Entity::Entity(std::string name):name_(name), hp_(100), velocity_(1), strengh_(1), location_(0,0), exp_(0), lvl_(0)
 {
     inventory_ = new Inventory("Backpack");
     equipedWeapon_ = new Weapon();
     equipedArmor_ = new Armor();
 }
 
-Entity::Entity(std::string name, int x, int y):name_(name), hp_(100), velocity_(1), location_(x,y)
+Entity::Entity(std::string name, int x, int y):name_(name), hp_(100), strengh_(1), velocity_(1), location_(x,y), exp_(0), lvl_(0)
 {
     inventory_ = new Inventory("Backpack");
     equipedWeapon_ = new Weapon();
     equipedArmor_ = new Armor();
 }
 
-Entity::Entity(std::string name, std::string weaponName, int weaponDamage, int weaponPenetration, int weaponVampirism, std::string armorName, int armorDef, int armorThorn, int armorRegeneration):name_(name), hp_(100), velocity_(1), location_(0,0)
+Entity::Entity(std::string name, std::string weaponName, int weaponDamage, int weaponPenetration, int weaponVampirism, std::string armorName, int armorDef, int armorThorn, int armorRegeneration):name_(name), hp_(100), strengh_(1), velocity_(1), location_(0,0), exp_(0), lvl_(0)
 {
     inventory_ = new Inventory("Backpack");
     equipedWeapon_ = new Weapon(weaponName, weaponDamage, weaponPenetration, weaponVampirism);
     equipedArmor_ = new Armor(armorName, armorDef, armorThorn, armorRegeneration);
 }
 
-Entity::Entity(std::string name, int x, int y, std::string weaponName, int weaponDamage, int weaponPenetration, int weaponVampirism, std::string armorName, int armorDef, int armorThorn, int armorRegeneration):name_(name), hp_(100), velocity_(1), location_(x,y)
+Entity::Entity(std::string name, int x, int y, std::string weaponName, int weaponDamage, int weaponPenetration, int weaponVampirism, std::string armorName, int armorDef, int armorThorn, int armorRegeneration):name_(name), hp_(100), strengh_(1), velocity_(1), location_(x,y), exp_(0), lvl_(0)
 {
     inventory_ = new Inventory("Backpack");
     equipedWeapon_ = new Weapon(weaponName, weaponDamage, weaponPenetration, weaponVampirism);
@@ -44,7 +44,7 @@ std::string Entity::recap()const{
 std::string Entity::info()const
 {
     std::string text("");
-    text = name_ + " " + getLocation().info() + ": hp(" + std::to_string(hp_) + "), velocity(" + std::to_string(velocity_) + ")\n" + equipedWeapon_->info() + equipedArmor_->info() + inventory_->info();
+    text = name_ + " " + getLocation().info() + "\nhp : " + std::to_string(hp_) + "\nexp : "+ std::to_string(exp_) +"\nstrengh : " + std::to_string(strengh_) + "\nvelocity : " + std::to_string(velocity_) + "\n" + equipedWeapon_->info() + equipedArmor_->info() + inventory_->info();
     return text;
 }
 
@@ -60,16 +60,16 @@ std::string Entity::move(std::string direction) {
     int deltaX(0);
     int deltaY(0);
 
-    if (isIn(direction, Key::FR::KEY_UP))
+    if (Str::isIn(direction, Key::FR::KEY_UP))
     {
         deltaY = velocity_;
-    }else if (isIn(direction, Key::FR::KEY_RIGHT))
+    }else if (Str::isIn(direction, Key::FR::KEY_RIGHT))
     {
         deltaX = velocity_;
-    }else if (isIn(direction, Key::FR::KEY_LEFT))
+    }else if (Str::isIn(direction, Key::FR::KEY_LEFT))
     {
         deltaX = -velocity_;
-    }else if (isIn(direction, Key::FR::KEY_DOWN))
+    }else if (Str::isIn(direction, Key::FR::KEY_DOWN))
     {
         deltaY = -velocity_;
     }
@@ -96,7 +96,7 @@ std::string Entity::approachCharacter(const Entity& target) {
 
     if (distance >= getVelocity()) {
         std::string direction;
-        if (deltaX != 0 or deltaY !=0)
+        if (deltaX != 0 || deltaY !=0)
         {
             if (std::abs(deltaX) > std::abs(deltaY))
             {
@@ -132,16 +132,18 @@ std::string Entity::fleeCharacter(const Entity& target) {
 
 void Entity::equipWeapon(Weapon* w){ 
     unequipWeapon();
-    if(w != nullptr && w->getName() != Const::WEAPON){
+    if(w != nullptr){
         equipedWeapon_ = w ;
     }
+    inventory_->removeItem(w->getName());
 }
 
 void Entity::equipArmor(Armor* a){ 
     unequipArmor();
-    if(a != nullptr && a->getName() != Const::ARMOR){
+    if(a != nullptr){
         equipedArmor_ = a ;
-    } 
+    }
+    inventory_->removeItem(a->getName());
 }
 
 void Entity::unequipWeapon(){
@@ -165,7 +167,7 @@ void Entity::dealDamage(int damage){
     hp_ = (hp_ < 0) ? 0 : hp_;
 }
 
-std::string Entity::attack(Entity& target){
+bool Entity::attack(Entity& target){
     if (this->isAlive())
     {
         if(location_ == target.getLocation()){
@@ -174,28 +176,43 @@ std::string Entity::attack(Entity& target){
             // true damage
             int trueDamage = std::round(getWeapon()->getDamage() * getWeapon()->getLethality());
             std::cout << std::to_string(trueDamage) << std::endl;
-            target.dealDamage(trueDamage);
+            target.dealDamage(trueDamage * ( 1 + strengh_/100));
             
             // normal damage
             int damage = getWeapon()->getDamage() - target.getArmor()->getDefense();
             damage = (damage < 0) ? 0 : damage;
             std::cout << std::to_string(damage) << std::endl;
-            target.dealDamage(damage);
+            target.dealDamage(damage * ( 1 + strengh_/100));
 
             // Vampirism
             hp_ += getWeapon()->getDamage() * getWeapon()->getVampirism();
             
-            std::string text = getName() + " is attacking " + target.getName() + "\nDamage : " + std::to_string(hp_mem-target.getHp()) + ", " +  std::to_string(target.getHp()) + "HP remaining)\n";
+            std::cout << getName() << " is attacking " << target.getName() << "\nDamage : " << std::to_string(hp_mem-target.getHp()) << ", " <<  std::to_string(target.getHp()) << "HP remaining)\n";
+            // if target die
             if(!target.isAlive()){
-                text += target.getName() + " is dead.\n";
-
+                std::cout << target.getName() + " is dead.\n";
+                // get xp
+                exp_ += 10;
+                updateXp();
+                return true;
             }
-            return text;
+            return false;
         }else{
-            return target.getName() + " is too far away.\n";
+            return false;
         }
     }else{
-        return "target is already dead.\n";
+        return false;
     }
-    return "";
+}
+
+void Entity::updateXp(){
+    // level up check in
+    if (exp_ > lvl_ * 100)
+    {
+        ++lvl_; // increase +1
+        exp_ = 0; // reset to 0
+
+        hp_ += 50; // hp increase
+        strengh_ += 5 ; // strengh increase
+    }
 }

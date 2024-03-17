@@ -12,7 +12,9 @@ class Entity
 {
 private:
     std::string name_;
-    int hp_, velocity_;
+    int hp_, velocity_, strengh_;
+    int exp_, lvl_;
+
     Coord location_;
     Inventory* inventory_;
     Weapon* equipedWeapon_;
@@ -63,6 +65,9 @@ public:
 
     // attack
     bool isAlive()const{return (hp_>0);} // return true if entity is alive else not
-    std::string attack(Entity& target); // attack the target by giving our weapon's damage
+    bool attack(Entity& target); // attack the target by giving our weapon's damage
     void dealDamage(int damage); // calculate the damage receive with reduce by protection
+
+    // other
+    void updateXp();
 };

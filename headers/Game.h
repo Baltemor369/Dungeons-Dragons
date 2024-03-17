@@ -1,12 +1,8 @@
 #pragma once
 
-// #include <iostream>
-// #include <vector>
-
 #include "Map.h"
-// #include "Entity.h"
-// #include "Random.h"
-// #include "strFct.h"
+
+#include "Craft.h"
 
 class Game
 {
@@ -31,6 +27,5 @@ public:
     void handleCreateWeapon(Inventory* invent);
     void handleCreateArmor(Inventory* invent);
     void handleCreateObject(Inventory* invent);
-    void handleCreateEntity(Group* team);
-    std::string autocomplete(std::vector<std::string> words, std::string input);
+    void handleCreateEntity(Group* team);    
 };
